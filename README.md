@@ -1,6 +1,10 @@
-# Lecture template
+# Lecture "Functional Programming (with fossil pollen data)"
 
-Template for a general structure and of a Lecture for SSoQE 2024.
+The presentation and materials for a lecture "Functional Programming (with fossil pollen data)" for SSoQE 2024.
+
+## Presentation
+
+This lecture has a build-in presentation, which is accesible [here](https://ssoqe.github.io/SSoQE-Functional_Programming_with_fossil_pollen_data/)
 
 ## Structure and content
 
@@ -30,7 +34,7 @@ Template for a general structure and of a Lecture for SSoQE 2024.
 |   └─ settings.json
 ├─ .gitignore
 ├─ .Rprofile
-├─ Lecture_template.Rproj
+├─ SSoQE-Functional_Programming_with_fossil_pollen_data.Rproj
 ├─ LICENSE
 ├─ README.md
 └─ renv.lock
@@ -40,10 +44,10 @@ Template for a general structure and of a Lecture for SSoQE 2024.
 
 ### Getting the repo
 
-The template is accessible in two ways:
+The project is accessible in two ways:
   
-1. If a user has a [GitHub account](https://github.com/), the easiest way is to create your own GitHub repo using this GitHub template. More details about how to use GitHub templates are on [GitHub Docs](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
-2. Use can download the latest [Release](https://github.com/OndrejMottl/quarto_revealjs_template/releases) of the Workflow as a zip file.
+1. If a user has a [GitHub account](https://github.com/) and can use [git](https://git-scm.com/), the easiest way is to [clone the repo](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository).
+2. Use can download the latest [Release](https://github.com/SSoQE/SSoQE-Exploring_Past_Vegetation_Using_Fossil_Pollen/releases) of the Workflow as a zip file.
 
 ### Set up R project
 
@@ -51,12 +55,4 @@ Once a user obtains their version of the project, there are several steps to be 
 
 * Update [R](https://en.wikipedia.org/wiki/R_(programming_language)) and [R-studio IDE](https://posit.co/products/open-source/rstudio/). There are many guides on how to do so (e.g. [here](https://jennhuck.github.io/workshops/install_update_R.html))
 * Execute all individual steps with the `R/___Init_project___.R` script. This will result in the preparation of all R-packages using the [`{renv}` package](https://rstudio.github.io/renv/articles/renv.html), which is an R dependency management of your projects. Mainly it will install [`{RUtilpol}`](https://github.com/HOPE-UIB-BIO/R-Utilpol-package) and all dependencies. `{RUtilpol}` is used throughout the project as a version control of files.
-* Set up your preferences by editing the The Config file in `R/00_Config_file.R` script. The Config file is a script where all settings (configurations) and criteria used throughout the project are predefined by the user before running individual scripts. In addition, it prepares the current session by loading the required packages and saving all settings throughout the project
-
-## Presentation
-
-This template is using [Quarto](https://quarto.org/) and [Reveal.js](https://revealjs.com) to make a presentation. All files are located in `Presentation` folder. The main file is `Presentation/presentation.qmd` which is a markdown file with some additional features. The presentation can be viewed by opening `docs/index.html` in a web browser.
-
-Please refer to [Presentation template](https://github.com/OndrejMottl/quarto_revealjs_template) for more details about style.
-
-After some edits, please run `Presentation/render.R` to update (re-render) the presentation.
+* Set up your preferences by editing the The Config file in `R/00_Config_file.R` script. The Config file is a script where all settings (configurations) and criteria used throughout the project are predefined by the user before running individual scripts. In addition, it prepares the current session by loading the required packages and saving all settings throughout the project.

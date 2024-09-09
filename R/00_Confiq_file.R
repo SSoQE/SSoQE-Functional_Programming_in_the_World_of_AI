@@ -1,12 +1,12 @@
 #----------------------------------------------------------#
 #
 #
-#                     Project name
+#     Functional Programming (with fossil pollen data)
 #
 #                     Config file
 #
 #
-#                O. Mottl, Author name
+#                       O. Mottl
 #                         2024
 #
 #----------------------------------------------------------#

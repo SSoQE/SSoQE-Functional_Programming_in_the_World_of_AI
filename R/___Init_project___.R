@@ -1,12 +1,12 @@
 #----------------------------------------------------------#
 #
 #
-#                     Project name
+#     Functional Programming (with fossil pollen data)
 #
 #                     Project setup
 #
 #
-#                O. Mottl, Author name
+#                       O. Mottl
 #                         2024
 #
 #----------------------------------------------------------#
@@ -49,7 +49,7 @@ if (
   library(here)
 } else {
   # install package
-  utils::install.packages("here")
+  renv::install("here")
 
   # load the package
   library(here)
