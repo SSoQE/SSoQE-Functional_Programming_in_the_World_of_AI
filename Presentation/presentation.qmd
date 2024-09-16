@@ -24,6 +24,22 @@ if(!require("countdown")) install.packages("countdown")
 
 library(countdown)
 
+if(!require("tidyverse")) install.packages("tidyverse")
+
+library(tidyverse)
+
+if(!require("palmerpenguins")) install.packages("palmerpenguins")
+
+library(palmerpenguins)
+
+if(!require("targets")) install.packages("targets")
+
+library(targets)
+
+if(!require("visNetwork")) install.packages("visNetwork")
+
+library(visNetwork)
+
 include_local_figure <- function(data_source) {
   knitr::include_graphics(
     path = here::here(
@@ -43,6 +59,1372 @@ include_local_figure <- function(data_source) {
 <br>
 
 Ondřej Mottl
+
+# [A function]{.bold .r-fit-text} {.title}
+
+## What is a `function` in R?
+
+<br>
+
+::: {.blockquote}
+A function is a block of code which only runs when it is called.
+:::
+
+<br>
+
+::: {.fragment}
+```{r}
+#| label: basic-function-example
+#| echo: true
+mean(x = c(1, 2, 3, 4, 5))
+```
+:::
+
+::: {.fragment}
+```{r}
+#| label: basic-function-example2
+#| echo: true
+#| eval: false
+function (x, trim = 0, na.rm = FALSE, ...) 
+{
+    if (!is.numeric(x) && !is.complex(x) && !is.logical(x)) {
+        warning("argument is not numeric or logical: returning NA")
+        return(NA_real_)
+    }
+    if (isTRUE(na.rm)) 
+        x <- x[!is.na(x)]
+    if (!is.numeric(trim) || length(trim) != 1L) 
+        stop("'trim' must be numeric of length one")
+    n <- length(x)
+    if (trim > 0 && n) {
+        if (is.complex(x)) 
+            stop("trimmed means are not defined for complex data")
+        if (anyNA(x)) 
+            return(NA_real_)
+        if (trim >= 0.5) 
+            return(stats::median(x, na.rm = FALSE))
+        lo <- floor(n * trim) + 1
+        hi <- n + 1 - lo
+        x <- sort.int(x, partial = unique(c(lo, hi)))[lo:hi]
+    }
+    .Internal(mean(x))
+}
+```
+:::
+
+## Parameters / Arguments
+
+<br>
+
+::: {.blockquote}
+You can pass data, known as parameters/arguments, into a function.
+:::
+
+<br>
+
+::: {.fragment}
+```{r}
+#| label: basic-param-example
+#| echo: true
+seq(
+  from = 1,
+  to = 10,
+  by = 2
+)
+```
+:::
+
+## Arguments matching
+
+```{r}
+#| label: argument-matching-1
+#| echo: true
+# create some data
+mydata <- rnorm(100)
+```
+
+<br>
+
+::: {.fragment}
+```{r}
+#| label: argument-matching-2
+#| echo: true
+sd(mydata)
+```
+:::
+
+::: {.fragment}
+```{r}
+#| label: argument-matching-3
+#| echo: true
+sd(x = mydata)
+```
+:::
+
+::: {.fragment}
+```{r}
+#| label: argument-matching-4
+#| echo: true
+sd(x = mydata, na.rm = FALSE)
+```
+:::
+
+::: {.fragment}
+```{r}
+#| label: argument-matching-5
+#| echo: true
+sd(na.rm = FALSE, x = mydata)
+```
+:::
+
+::: {.fragment}
+```{r}
+#| label: argument-matching-6
+#| echo: true
+sd(na.rm = FALSE, mydata)
+```
+:::
+
+## Creating a function - reason
+
+```{r}
+#| label: create-function-reason-1
+#| echo: true
+a <- rnorm(5)
+b <- rnorm(5)
+c <- rnorm(5)
+d <- rnorm(5)
+```
+
+<br>
+
+::: {.fragment}
+```{r}
+#| label: create-function-reason-2
+#| echo: true
+#| eval: false
+(a - min(a)) / (max(a) - min(a))
+(b - min(b)) / (max(b) - min(b))
+(c - min(c)) / (max(c) - min(c))
+(d - min(d)) / (max(d) - min(d))  
+```
+:::
+
+<br>
+
+::: {.fragment}
+
+```{r}
+#| label: create-function-reason-3
+#| echo: true
+#| eval: false
+(█ - min(█)) / (max(█) - min(█))
+```
+:::
+
+
+## DRY - Don't Repeat Yourself
+
+<br>
+
+::: {.blockquote}
+
+If you have to repeat the **same code** [more than twice]{.text-color-highlight-primary}, it is a good idea to create a [function]{.text-color-highlight-secondary}.
+
+:::
+
+
+## Creating a function
+
+```{r}
+#| label: create-function
+#| eval: false
+#| echo: true
+my_function <- function(<arguments>) {
+  ## Do something interesting
+}
+```
+
+<br>
+
+::: {.fragment}
+```{r}
+#| label: create-function-example
+#| echo: true
+rescale_to_01 <- function(x) {
+  (x - min(x)) / (max(x) - min(x))
+}
+```
+:::
+
+<br>
+
+::: {.fragment}
+```{r}
+#| label: create-function-example2
+#| echo: true
+rescale_to_01(c(-10, 0, 10))
+```
+:::
+
+## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
+
+:::{.r-fit-text}
+1. What are your experiences with making functions?
+2. How can we improve the function `rescale_to_01`?
+:::
+
+```{r}
+#| label: create-function-exercise
+#| echo: true
+rescale_to_01 <- function(x) {
+  (x - min(x)) / (max(x) - min(x))
+}
+```
+
+<br>
+
+::: {.fragment}
+```{r}
+#| label: create-function-exercise2
+#| echo: true
+rescale_to_01 <- function(x) {
+  x_range <- 
+    range(x, na.rm = TRUE, finite = TRUE)
+  res <- 
+    (x - x_range[1]) / (x_range[2] - x_range[1])
+  return(res)
+}
+```
+:::
+
+`r countdown(minutes = 3)`
+
+# [Functionals]{.bold .r-fit-text} {.title}
+
+## Functionals
+
+```{r}
+#| label: functional-meme
+include_local_figure("functional_meme.png")
+```
+
+::: footer
+[https://www.reddit.com/r/ProgrammerHumor/](https://www.reddit.com/r/ProgrammerHumor/comments/a5ggzi/functions/)
+:::
+
+
+## Functionals
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+A [functional]{.text-color-highlight-primary} is a [function]{.text-color-highlight-secondary} that 
+
+::: {.incremental}
+* takes a [function]{.text-color-highlight-secondary} as an **input** 
+* and returns a [vector]{.text-color-highlight-terciary} as **output**
+:::
+
+:::
+
+::: {.column width="45%" .fragment}
+```{r}
+#| label: functional-programming
+knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/1dff819e743f280bbab1c55f8f063e60b6a0d2fb/2269e/diagrams/fp.png")
+```
+:::
+::::
+
+<br>
+
+::: {.fragment}
+Bjarne Stroustrup: 
+
+::: {.blockquote}
+To become significantly more reliable, code must become more transparent. In particular, nested conditions and loops must be viewed with great suspicion. Complicated control flows confuse programmers. Messy code often hides bugs.
+:::
+:::
+
+::: footer
+[Advanced R](https://adv-r.hadley.nz/fp.html)
+:::
+
+## {purrr} package
+
+```{r}
+#| label: purrr-package
+knitr::include_graphics("https://purrr.tidyverse.org/logo.png")
+```
+
+::: footer
+[purrr.tidyverse.org](https://purrr.tidyverse.org/)
+:::
+
+## `purrr::map()`
+
+```{r}
+#| label: purrr-map-vis
+knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/f0494d020aa517ae7b1011cea4c4a9f21702df8b/2577b/diagrams/functionals/map.png")
+```
+
+::: footer
+[Advanced R](https://adv-r.hadley.nz/functionals.html)
+:::
+
+## `purrr::map()` - name?
+
+Why `map()`?
+
+::: {.fragment}
+From Math:
+
+::: {.blockquote}
+an operation that associates each element of a given set with one or more elements of a second set
+:::
+:::
+
+## `purrr::map()`
+
+```{r}
+#| label: purrr-map-example-1
+#| echo: true
+add_1 <- function(x){
+  return(x + 1)
+} 
+
+```
+
+<br>
+
+::: {.fragment}
+
+```{r}
+#| label: purrr-map-example-2
+#| echo: true
+purrr::map(
+  .x = 1:3, 
+  .f = add_1
+  )
+```
+:::
+
+## `purrr::map()`
+
+`purrr::map()` returns list. There are other variants `purrr::map` that return different types of objects.
+
+* `purrr::map_dbl()` returns a numeric vector
+* `purrr::map_chr()` returns a character vector
+* `purrr::map_lgl()` returns a logical vector
+* `purrr::map_int()` returns an integer vector
+
+<br>
+
+::: {.fragment}
+```{r}
+#| label: purrr-map-example-3
+#| echo: true
+purrr::map_dbl(
+  .x = 1:3, 
+  .f = add_1
+  )
+```
+:::
+
+## `purrr::map()`
+
+```{r}
+# | label: purrr-map-vis-2
+knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/12f6af8404d9723dff9cc665028a35f07759299d/d0d9a/diagrams/functionals/map-list.png")
+```
+
+::: footer
+[Advanced R](https://adv-r.hadley.nz/functionals.html)
+:::
+
+## `purrr::map()`
+
+```{r}
+#| label: purrr-map-example-4
+#| echo: true
+my_list <-
+  list(
+    x = rnorm(5),
+    y = rnorm(5),
+    z = rnorm(5)
+  ) 
+```
+
+<br>
+
+::: {.fragment}
+
+```{r}
+#| label: purrr-map-example-5
+#| echo: true
+purrr::map_dbl(
+  .x = my_list, 
+  .f = mean
+  )
+```
+:::
+
+## `purrr::map()` - Anonymous functions
+
+```{r}
+#| label: purrr-map-anon-1
+#| echo: true
+get_length_of_unique <- function(x){
+  unique(x)  %>% 
+    length()  %>% 
+    return()
+}
+
+purrr::map_dbl(
+  .x = mtcars, 
+  .f = get_length_of_unique
+  )
+```
+
+<br>
+
+::: {.fragment}
+The magic of `~` ([tilde operator]{.text-color-highlight-primary}):
+
+```{r}
+#| label: purrr-map-anon-2
+#| echo: true
+purrr::map_dbl(
+  .x = mtcars,
+  .f = ~ unique(.x) %>%
+    length()
+)
+```
+:::
+
+## `purrr::map()` - Anonymous functions
+
+Tilde can be also used to combine custom and base functions.
+
+```{r}
+#| label: purrr-map-anon-3
+#| echo: true
+purrr::map_dbl(
+  .x = list(
+    x = rnorm(5),
+    y = rnorm(5),
+    z = rnorm(5)
+  ),
+  .f = ~ add_1(.x) %>%
+    mean()
+)
+```
+
+## [Functional workflow]{.r-fit-text} {.subtitle .textcenter}
+
+## Functional workflow - example
+
+The data will be using Palmer's `penguins` dataset.
+
+:::: {.columns}
+
+::: {.column width="30%"}
+
+```{r}
+#| label: purrr-advanced-data
+knitr::include_graphics("https://allisonhorst.github.io/palmerpenguins/reference/figures/palmerpenguins.png")
+```
+
+:::
+
+::: {.column width="65%"}
+
+```{r}
+#| label: purrr-advanced-data2
+knitr::include_graphics("https://allisonhorst.github.io/palmerpenguins/reference/figures/lter_penguins.png")
+```
+:::
+
+::::
+
+::: footer
+[Palmer penguins dataset](https://allisonhorst.github.io/palmerpenguins/)
+:::
+
+## Functional workflow - example
+
+```{r}
+#| label: purrr-advanced-data3
+#| echo: true
+library(palmerpenguins)
+head(penguins)
+```
+
+## Functional workflow - example
+
+The goal is to plot the relationship between `bill_length_mm` and `bill_depth_mm` for each species.
+
+```{r}
+#| label: purrr-advanced-data4
+knitr::include_graphics("https://allisonhorst.github.io/palmerpenguins/reference/figures/culmen_depth.png")
+```
+
+::: footer
+[Palmer penguins dataset](https://allisonhorst.github.io/palmerpenguins/)
+:::
+
+## Functional workflow - example
+
+```{r}
+#| label: purrr-advanced
+#| echo: true
+data_penguins_by_species <-
+  penguins %>%
+  tidyr::nest(data_nested = -species)
+```
+
+<br>
+
+::: {.fragment}
+```{r}
+#| label: purrr-advanced2
+#| echo: true
+print(data_penguins_by_species)
+```
+:::
+
+## Functional workflow - example {auto-animate="true"}
+
+```{r}
+#| label: purrr-advanced3
+#| echo: true
+data_penguins_by_species_lm <-
+  data_penguins_by_species %>%
+  dplyr::mutate(
+    model = purrr::map(
+      .x = data_nested,
+      .f = ~ stats::lm(bill_length_mm ~ bill_depth_mm, data = .x)
+    )
+  )
+```
+
+## Functional workflow - example {auto-animate="true"}
+
+```{r}
+#| label: purrr-advanced4
+#| echo: true
+data_penguins_by_species_lm <-
+  data_penguins_by_species %>%
+  dplyr::mutate(
+    model = purrr::map(
+      .x = data_nested,
+      .f = ~ stats::lm(bill_length_mm ~ bill_depth_mm, data = .x)
+    ),
+    model_coef = purrr::map(
+      .x = model,
+      .f = ~ stats::coef(.x)
+    )
+  )
+```
+
+## Functional workflow - example {auto-animate="true"}
+
+```{r}
+#| label: purrr-advanced5
+#| echo: true
+data_penguins_by_species_lm <-
+  data_penguins_by_species %>%
+  dplyr::mutate(
+    model = purrr::map(
+      .x = data_nested,
+      .f = ~ stats::lm(bill_length_mm ~ bill_depth_mm, data = .x)
+    ),
+    model_coef = purrr::map(
+      .x = model,
+      .f = ~ stats::coef(.x)
+    ),
+    plot = purrr::map2(
+      .x = data_nested,
+      .y = model_coef,
+      .f = ~ ggplot2::ggplot(
+        data = .x,
+        mapping = ggplot2::aes(x = bill_depth_mm, y = bill_length_mm)
+      ) +
+        ggplot2::geom_point() +
+        ggplot2::geom_abline(
+          intercept = .y[[1]],
+          slope = .y[[2]],
+          col = "red"
+        ) +
+        ggplot2::coord_cartesian(
+           xlim = range(penguins$bill_depth_mm, na.rm = TRUE),
+          ylim = range(penguins$bill_length_mm, na.rm = TRUE)
+        ) 
+    )
+  )
+```
+
+## Functional workflow - example
+
+```{r}
+#| label: purrr-advanced6
+#| echo: true
+print(data_penguins_by_species_lm)
+```
+
+<br>
+
+::: {.fragment}
+
+```{r}
+#| label: purrr-advanced7
+#| echo: true
+#| fig.height: 2
+ggpubr::ggarrange(
+  plotlist = data_penguins_by_species_lm$plot,
+  labels = data_penguins_by_species_lm$species,
+  ncol = 3
+)
+```
+
+:::
+
+## Functional workflow - example 
+
+Figure with a single call.
+
+```{r}
+#| label: purrr-advanced8
+#| echo: true
+#| eval: false
+fig_penguins_beak_lm <-
+ penguins %>%
+  tidyr::nest(data_nested = -species)
+  dplyr::mutate(
+    model = purrr::map(
+      .x = data_nested,
+      .f = ~ stats::lm(bill_length_mm ~ bill_depth_mm, data = .x)
+    ),
+    model_coef = purrr::map(
+      .x = model,
+      .f = ~ stats::coef(.x)
+    ),
+    plot = purrr::map2(
+      .l = list(
+        data_nested,
+        model_coef,
+        species
+      ),
+      .f = ~ ggplot2::ggplot(
+        data = ..1,
+        mapping = ggplot2::aes(x = bill_depth_mm, y = bill_length_mm)
+      ) +
+        ggplot2::geom_point() +
+        ggplot2::geom_abline(
+          intercept = ., 2[[1]],
+          slope = ..2[[2]],
+          col = "red"
+        ) +
+        ggplot2::coord_cartesian(
+           xlim = range(penguins$bill_depth_mm, na.rm = TRUE),
+          ylim = range(penguins$bill_length_mm, na.rm = TRUE)
+        ) +
+        ggplot2::labs(
+          title = ..3
+        )
+    )
+  ) %>%
+  purrr::chuck("plot") %>%
+  ggpubr::ggarrange(
+    plotlist = .,
+    ncol = 3
+  )
+```
+
+## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
+
+::::{.r-fit-text}
+* [💽go to R/Exercises/Functional project/Picea_CZ_TroughTime.R](https://github.com/SSoQE/SSoQE-Exploring_Past_Vegetation_Using_Fossil_Pollen/blob/main/R/Exercises/Functional workflow/Picea_CZ_TroughTime.R)
+* Read to code to understand it.
+* Turn any code chunk into general function.
+
+::: {.fragment}
+bonus: Try to use `{purrr}` package
+::: 
+
+::::
+
+`r countdown(minutes = 5)`
+
+# [Functional project]{.bold .r-fit-text} {.title}
+
+## Functional project
+
+We wrote a very usefull function that loads and cleans a csv file.
+
+```{r}
+#| label: f-project-reason-fc_example
+#| echo: true
+#| eval: false
+load_and_clean_csv <- function(file_name){
+  file_name  %>% 
+    readr::read_csv(file = .) %>%
+    janitor::clean_names()  %>% 
+    return()
+}
+```
+
+## Functional project
+
+```{r}
+#| eval: false
+#| echo: true
+# .
+# └─my_awesome_project/
+#   ├─ Data/
+#   |   ├─ Input/
+#   |   |  ├─ vegetation_lowlands.csv
+#   |   |  └─ vegetation_highlands.csv
+#   |   └─ Processed/
+#   ├─ R/
+#   |   ├─ 01_Estimate_diversity.R
+#   |   └─ 02_Fit_diversity_model.R
+```
+
+:::: {.columns}
+
+::: {.column width="49%" .fragment}
+```{r}
+#| label: f-project-reason-diversity-1
+#| echo: true
+#| eval: false
+#| code-line-numbers: "|5-9"
+# 01_Estimate_diversity.R:
+# <Header>
+
+# define helper function
+load_and_clean_csv <- function(file_name){
+  file_name  %>% 
+    readr::read_csv(file = .) %>%
+    janitor::clean_names()  %>% 
+    return()
+}
+
+# load data
+data_vegetation_lowlands <- 
+  load_and_clean_csv("Data/Input/vegetation_lowlands.csv")
+
+data_vegetation_highlands <- 
+  load_and_clean_csv("Data/Input/vegetation_highlands.csv")
+
+# <Estimate diversity> ...
+```
+
+:::
+
+::: {.column width="50%" .fragment}
+```{r}
+#| label: f-project-reason-model-1
+#| echo: true
+#| eval: false
+#| code-line-numbers: "|5-9"
+# 02_Fit_diversity_model.R:
+# <Header>
+
+# define helper function
+load_and_clean_csv <- function(file_name){
+  file_name  %>% 
+    readr::read_csv(file = .) %>%
+    janitor::clean_names()  %>% 
+    return()
+}
+
+# load data
+data_diversity_lowlands <- 
+  load_and_clean_csv("Data/Processed/diversity_lowlands.csv")
+
+data_diversity_highlands <-
+  load_and_clean_csv("Data/Processed/diversity_highlands.csv")
+
+# <Fit models> ...
+```
+:::
+::::
+
+## Functional project
+
+Now we want to edit the function to also include {here} package.
+
+::: {.fragment}
+
+```{r}
+#| label: f-project-reason-fc_example2
+#| echo: true
+#| eval: false
+#| code-line-numbers: "|3"
+load_and_clean_csv <- function(file_name){
+  file_name  %>% 
+    here::here() %>%
+    readr::read_csv(file = .) %>%
+    janitor::clean_names()
+}
+```
+:::
+
+::: {.fragment}
+We would need to edit the function in [every]{.text-color-highlight-primary} script!!
+:::
+
+## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
+
+:::{.r-fit-text}
+How would you solve the problem with the function?
+:::
+
+`r countdown(minutes = 3)`
+
+## Functional project
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "|12"
+# .
+# └─my_awesome_project/
+#   ├─ Data/
+#   |   ├─ Input/
+#   |   |  ├─ vegetation_lowlands.csv
+#   |   |  └─ vegetation_highlands.csv
+#   |   └─ Processed/
+#   ├─ R/
+#   |   ├─ 01_Estimate_diversity.R
+#   |   └─ 02_Fit_diversity_model.R
+#   |   └─ Functions/
+#   |       └─ load_and_clean_csv.R
+```
+
+:::: {.columns}
+
+::: {.column width="49%"}
+```{r}
+#| label: f-project-reason-diversity-2
+#| echo: true
+#| eval: false
+#| code-line-numbers: "|4-8"
+# 01_Estimate_diversity.R:
+# <Header>
+
+source(
+  here::here(
+    "R/Functions/load_and_clean_csv.R"
+    )
+)
+
+# load data
+data_vegetation_lowlands <- 
+  load_and_clean_csv("Data/Input/vegetation_lowlands.csv")
+
+data_vegetation_highlands <- 
+  load_and_clean_csv("Data/Input/vegetation_highlands.csv")
+
+# <Estimate diversity> ...
+```
+
+:::
+
+::: {.column width="50%"}
+```{r}
+#| label: f-project-reason-model-2
+#| echo: true
+#| eval: false
+#| code-line-numbers: "|4-8"
+# 02_Fit_diversity_model.R:
+# <Header>
+
+source(
+  here::here(
+    "R/Functions/load_and_clean_csv.R"
+    )
+)
+
+# load data
+data_diversity_lowlands <- 
+  load_and_clean_csv("Data/Processed/diversity_lowlands.csv")
+
+data_diversity_highlands <-
+  load_and_clean_csv("Data/Processed/diversity_highlands.csv")
+
+# <Fit models> ...
+```
+:::
+::::
+
+## Functional project 
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "|9,13-15"
+# .
+# └─my_awesome_project/
+#   ├─ Data/
+#   |   ├─ Input/
+#   |   |  ├─ vegetation_lowlands.csv
+#   |   |  └─ vegetation_highlands.csv
+#   |   └─ Processed/
+#   ├─ R/
+#   |   ├─ 00_Config_file.R
+#   |   ├─ 01_Estimate_diversity.R
+#   |   └─ 02_Fit_diversity_model.R
+#   |   └─ Functions/
+#   |       ├─ fit_linear_model.R
+#   |       ├─ load_and_clean_csv.R
+#   |       └─ plot_regression.R
+```
+
+:::: {.columns}
+
+::: {.column width="49%"}
+```{r}
+#| label: f-project-reason-diversity-3
+#| echo: true
+#| eval: false
+#| code-line-numbers: "|4-6"
+# 01_Estimate_diversity.R:
+# <Header>
+
+source(
+  here::here("00_Config_file.R")
+)
+
+# load data
+data_vegetation_lowlands <- 
+  load_and_clean_csv("Data/Input/vegetation_lowlands.csv")
+
+data_vegetation_highlands <- 
+  load_and_clean_csv("Data/Input/vegetation_highlands.csv")
+
+# <Estimate diversity> ...
+```
+
+:::
+
+::: {.column width="50%"} 
+```{r}
+#| label: f-project-reason-model-3
+#| echo: true
+#| eval: false
+#| code-line-numbers: "|4-6"
+# 02_Fit_diversity_model.R:
+# <Header>
+
+source(
+  here::here("00_Config_file.R")
+)
+
+# load data
+data_diversity_lowlands <- 
+  load_and_clean_csv("Data/Processed/diversity_lowlands.csv")
+
+data_diversity_highlands <-
+  load_and_clean_csv("Data/Processed/diversity_highlands.csv")
+
+# <Fit models> ...
+```
+:::
+::::
+
+## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
+
+:::{.r-fit-text}
+* [💽go to R/Exercises/Functional project/Picea_CZ_TroughTime.R](https://github.com/SSoQE/SSoQE-Exploring_Past_Vegetation_Using_Fossil_Pollen/blob/main/R/Exercises/Functional workflow/Picea_CZ_TroughTime.R)
+* Split the analysis into separate scripts.
+:::
+
+`r countdown(minutes = 5)`
+
+# [Reproducible pipeline]{.bold .r-fit-text} {.title}
+
+## Reproducible pipeline/workflow
+
+```{r}
+#| label: reproducible-pipeline
+include_local_figure("what-is-a-workflow.png")
+```
+
+::: footer
+[This image was created by Scriberia for The Turing Way community and is used under a CC-BY licence](https://zenodo.org/doi/10.5281/zenodo.3332807)
+:::
+
+## {targets} package
+
+```{r}
+#| label: targets-package
+knitr::include_graphics("https://docs.ropensci.org/targets/logo.svg")
+```
+
+::: footer
+[targets package](https://docs.ropensci.org/targets/)
+:::
+
+## Example pipeline
+
+<br>
+
+::: {.fragment}
+```{mermaid}
+flowchart LR
+    A(Download data) --> B(Extract Samples)
+    B --> C(Plot)
+```
+:::
+
+## Example pipeline 
+
+:::: {.columns}
+
+::: {.column width="33%"}
+```{mermaid}
+flowchart LR
+    A(Download data)
+```
+
+::: {.fragment}
+```{r}
+#| label: targets_ex_download_1
+#| echo: true
+#| eval: false
+#| output: false
+# 01_Download_data.R:
+# <Header>
+# <packages>
+# get datasets
+data_pollen_datatasets <-
+  neotoma2::get_datasets(
+    loc = sel_polygon,
+    datasettype = "pollen",
+    all_data = TRUE
+  )
+
+# get downloads
+# this will take a while
+data_pollen_downloads <-
+  neotoma2::get_downloads(data_pollen_datatasets)
+
+# Save data
+data_pollen_downloads  %>% 
+  readr::write_rds(
+    here::here("Data/Input/data_pollen.rds")
+  )
+```
+:::
+
+:::
+
+::: {.column width="33%"}
+```{mermaid}
+flowchart LR
+    B(Extract Samples)
+```
+
+::: {.fragment}
+```{r}
+#| label: targets_ex_samples_1
+#| echo: true
+#| eval: false
+# 02_Extract_samples.R:
+# <Header>
+# <packages>
+
+# load data
+data_pollen_downloads <-
+  readr::read_rds(
+     here::here("Data/Input/data_pollen.rds")
+  )
+
+# get samples
+data_pollen_samples <-
+  neotoma2::samples(data_pollen_downloads) %>%
+  as.data.frame() %>%
+  tibble::as_tibble()
+
+# save results
+data_pollen_samples  %>% 
+  readr::write_rds(
+    here::here("Data/Processed/data_pollen_samples.rds")
+  )
+```
+:::
+:::
+
+::: {.column width="33%"}
+```{mermaid}
+flowchart LR
+    C(Plot results)
+```
+
+::: {.fragment}
+```{r}
+#| label: targets_ex_plot_1
+#| echo: true
+#| eval: false
+# 03_Plot_results.R:
+# <Header>
+# <packages>
+
+# load data
+data_pollen_samples <-
+  readr::read_rds(
+    here::here("Data/Processed/data_pollen_samples.rds")
+  )
+
+# make plot
+fig_distribution <-
+  plot_distribution(
+    data = data_pollen_samples,
+    sel_taxon = "Picea abies")
+
+# save plot
+ggplot2::ggsave(
+  plot = fig_distribution,
+  filename = here::here("Outputs/Figures/plot_distribution.png")
+  )
+```
+:::
+:::
+::::
+
+## Example pipeline - using {targets}
+
+```{r}
+#| label: targets_ex_pipeline_1
+#| echo: true
+#| eval: false
+#| code-line-numbers: "|4-8|9-12|13-16|"
+# R/Project/pollen_target.R:
+# <Header>
+list(
+  targets::tar_target(
+    name = "data_pollen",
+    command =  load_polygon("Data/Input/sel_polygon.JSON") %>%
+      download_pollen_data()
+  ),
+  targets::tar_target(
+    name = "data_pollen_samples",
+    command = extract_pollen_samples(data_pollen)
+  ),
+  targets::tar_target(
+    name = "fig_distribution",
+    command = plot_distribution_of_taxa(data_pollen_samples, sel_taxon = "Picea abies"
+    )
+  )
+)
+```
+
+```{r}
+#| label: targets_ex_pipeline_1_real
+#| echo: false
+#| eval: true
+#| output: false
+
+
+# make sure that `extract_pollen_samples()` function is defined
+file_conn <-
+  here::here("R/Project/Functions/extract_pollen_samples.R")
+
+writeLines(
+  "
+extract_pollen_samples <- function(data_source) {
+  `%>%` <- magrittr::`%>%`
+
+  data_pollen_samples <-
+    neotoma2::samples(data_source) %>%
+    as.data.frame()
+
+  return(data_pollen_samples)
+}",
+  file_conn
+)
+
+# make sure that there is no previous target
+targets::tar_destroy(
+  script = here::here("R/Project/pollen_target.R"),
+  verbose = FALSE,
+  ask = FALSE
+)
+```
+
+::: {.fragment}
+```{r}
+#| label: targets_ex_pipeline_2
+#| echo: true
+#| eval: false
+targets::tar_make()
+```
+
+```{r}
+#| label: targets_ex_pipeline_2_real
+#| echo: false
+#| eval: true
+#| output: true
+targets::tar_make(
+  script = here::here("R/Project/pollen_target.R")
+)
+```
+:::
+
+## Example pipeline - using {targets}
+
+```{r}
+#| label: targets_ex_pipeline_3
+#| echo: true
+#| eval: false
+targets::tar_visnetwork()
+```
+
+::: {.fragment}
+```{r}
+#| label: targets_ex_pipeline_3_real
+#| echo: false
+#| eval: true
+#| output: true
+targets::tar_visnetwork(
+   script = here::here("R/Project/pollen_target.R")
+     )
+```
+:::
+
+## Example pipeline - using {targets} {auto-animate="true"}
+
+Now edit the `extract_pollen_samples()` function.
+
+```{r}
+#| label: targets_ex_pipeline_4
+#| echo: true
+#| eval: false
+# extract_pollen_samples.R:
+# <Header>
+extract_pollen_samples <- function(data_source) {
+  `%>%` <- magrittr::`%>%`
+
+  data_pollen_samples <-
+    neotoma2::samples(data_source) %>%
+    as.data.frame()
+
+  return(data_pollen_samples)
+}
+```
+
+## Example pipeline - using {targets} {auto-animate="true"}
+
+Now edit the `extract_pollen_samples()` function.
+
+```{r}
+#| label: targets_ex_pipeline_4b
+#| echo: true
+#| eval: false
+#| code-line-numbers: "9"
+# extract_pollen_samples.R:
+# <Header>
+extract_pollen_samples <- function(data_source) {
+  `%>%` <- magrittr::`%>%`
+
+  data_pollen_samples <-
+    neotoma2::samples(data_source) %>%
+    as.data.frame()  %>% 
+    tibble::as_tibble()
+
+  return(data_pollen_samples)
+}
+```
+
+## Example pipeline - using {targets} 
+
+```{r}
+#| label: targets_ex_pipeline_5
+#| echo: true
+#| eval: false
+targets::tar_visnetwork()
+```
+
+::: {.fragment}
+```{r}
+#| label: targets_ex_pipeline_5_real
+#| echo: false
+#| eval: true
+#| output: true
+file_conn <-
+  here::here("R/Project/Functions/extract_pollen_samples.R")
+
+writeLines(
+  "
+extract_pollen_samples <- function(data_source) {
+  `%>%` <- magrittr::`%>%`
+
+  data_pollen_samples <-
+    neotoma2::samples(data_source) %>%
+    as.data.frame()  %>%
+    tibble::as_tibble()
+
+  return(data_pollen_samples)
+}",
+  file_conn
+)
+
+targets::tar_visnetwork(
+  script = here::here("R/Project/pollen_target.R")
+)
+```
+:::
+
+## Example pipeline - using {targets} 
+
+```{r}
+#| label: targets_ex_pipeline_6
+#| echo: true
+#| eval: false
+targets::tar_make()
+```
+
+```{r}
+#| label: targets_ex_pipeline_6_real
+#| echo: false
+#| eval: true
+#| output: true
+targets::tar_make(
+  script = here::here("R/Project/pollen_target.R")
+)
+```
+
+::: {.fragment}
+```{r}
+#| label: targets_ex_pipeline_7
+#| echo: true
+#| eval: false
+targets::tar_visnetwork()
+```
+
+```{r}
+#| label: targets_ex_pipeline_7_real
+#| echo: false
+#| eval: true
+#| output: true
+targets::tar_visnetwork(
+   script = here::here("R/Project/pollen_target.R")
+     )
+```
+:::
+
+## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
+
+:::{.r-fit-text}
+1. What are your experiences with {targets} package?
+2. Compare the pipeline with script-based aproach.
+3. How can we improve the pipeline?
+:::
+
+`r countdown(minutes = 5)`
 
 # [Outro]{.bold .r-fit-text} {.title}
 

@@ -28,7 +28,7 @@ $color-high-tertiary: $persian-green !default;
 $body-color: $color-primary !default;
 $link-color: $color-high-tertiary !default;
 $selection-bg: $color-high-tertiary !default;
-$code-color: $color-primary !default;
+$code-color:  $color-primary !default;
 
 // Background of the presentation
 $backgroundColor: $color-secondary !default;
@@ -53,6 +53,17 @@ $heading2Size: 2.11em;
 $heading3Size: 1.55em;
 $heading4Size: 1em;
 
+$mermaid-bg-color: $color-high-primary;
+$mermaid-edge-color: $color-primary;
+$mermaid-node-fg-color: $body-color;
+$mermaid-fg-color: $color-secondary;
+$mermaid-fg-color--lighter: lighten($color-secondary, 10%);
+$mermaid-fg-color--lightest: lighten($color-secondary, 20%);
+$mermaid-font-family: $mainFont;
+$mermaid-label-bg-color: $color-high-primary;
+$mermaid-label-fg-color: $color-secondary;
+$mermaid-node-bg-color: $color-high-primary;
+
 // Layout
 $content-max-width: 900px;
 
@@ -71,7 +82,6 @@ a {
   color: $link-color;
   text-decoration: none;
   transition: color 0.3s ease;
-
   &:hover {
     color: darken($link-color, 10%);
     text-decoration: underline;
@@ -122,8 +132,7 @@ a {
 }
 
 /* Headings */
-h1,
-.reveal h1 {
+h1, .reveal h1 {
   font-family: $headingFont;
   font-size: $heading1Size;
   color: $headingColor;
@@ -135,8 +144,7 @@ h1,
   margin: $headingMargin;
 }
 
-h2,
-.reveal h2 {
+h2, .reveal h2 {
   font-family: $headingFont;
   font-size: $heading2Size;
   color: $headingColor;
