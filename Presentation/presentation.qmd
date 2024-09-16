@@ -745,7 +745,7 @@ fig_penguins_beak_lm <-
 ## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
 
 ::::{.r-fit-text}
-* [💽go to R/Exercises/Functional project/Picea_CZ_TroughTime.R](https://github.com/SSoQE/SSoQE-Exploring_Past_Vegetation_Using_Fossil_Pollen/blob/main/R/Exercises/Functional workflow/Picea_CZ_TroughTime.R)
+* [💽go to R/Exercises/Functional project/Picea_CZ_TroughTime.R](https://github.com/SSoQE/SSoQE-Functional_Programming_with_fossil_pollen_data/blob/main/R/Exercises/Functional workflow/Picea_CZ_TroughTime.R)
 * Read to code to understand it.
 * Turn any code chunk into general function.
 
@@ -1038,7 +1038,7 @@ data_diversity_highlands <-
 ## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
 
 :::{.r-fit-text}
-* [💽go to R/Exercises/Functional project/Picea_CZ_TroughTime.R](https://github.com/SSoQE/SSoQE-Exploring_Past_Vegetation_Using_Fossil_Pollen/blob/main/R/Exercises/Functional workflow/Picea_CZ_TroughTime.R)
+* [💽go to R/Exercises/Functional project/Picea_CZ_TroughTime.R](https://github.com/SSoQE/SSoQE-Functional_Programming_with_fossil_pollen_data/blob/main/R/Exercises/Functional workflow/Picea_CZ_TroughTime.R)
 * Split the analysis into separate scripts.
 :::
 
