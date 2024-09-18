@@ -85,20 +85,28 @@ if (
 # install all packages in the lst from CRAN
 sapply(
   c(
+    "countdown",
     "fs",
+    "geojsonsf",
+    "ggpubr",
     "here",
     "httpgd",
     "janitor",
     "jsonlite",
     "knitr",
     "languageserver",
+    "maps",
+    "neotoma2",
+    "palmerpenguins",
     "quarto",
     "renv",
     "remotes",
     "rlang",
+    "targets",
     "tidyverse",
     "usethis",
-    "utils"
+    "utils",
+    "visNetwork"
   ),
   utils::install.packages,
   character.only = TRUE
@@ -121,4 +129,3 @@ renv::snapshot(
 )
 
 cat("Set up completed. You can continute to run the project", "\n")
-

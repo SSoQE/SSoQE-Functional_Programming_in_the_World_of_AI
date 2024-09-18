@@ -50,20 +50,28 @@ if (
 # Define packages
 package_list <-
   c(
+    "countdown",
     "fs",
+    "geojsonsf",
+    "ggpubr",
     "here",
     "httpgd",
     "janitor",
     "jsonlite",
     "knitr",
     "languageserver",
+    "maps",
+    "neotoma2",
+    "palmerpenguins",
     "quarto",
     "renv",
     "remotes",
     "rlang",
+    "targets",
     "tidyverse",
     "usethis",
-    "utils"
+    "utils",
+    "visNetwork"
   )
 
 # Attach all packages

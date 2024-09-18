@@ -40,6 +40,14 @@ if(!require("visNetwork")) install.packages("visNetwork")
 
 library(visNetwork)
 
+if(!require("ggpubr")) install.packages("ggpubr")
+
+library(ggpubr)
+
+if(!require("neotoma2")) install.packages("neotoma2")
+
+library(neotoma2)
+
 include_local_figure <- function(data_source) {
   knitr::include_graphics(
     path = here::here(
@@ -59,6 +67,8 @@ include_local_figure <- function(data_source) {
 <br>
 
 Ondřej Mottl
+
+[Science School of Quantitative Ecology 2024](bit.ly/SSoQE)
 
 # [A function]{.bold .r-fit-text} {.title}
 
