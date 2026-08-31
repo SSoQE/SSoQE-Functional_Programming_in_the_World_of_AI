@@ -1,58 +1,50 @@
-# Lecture "Functional Programming (with fossil pollen data)"
+<div align="center">
 
-The presentation and materials for a lecture "Functional Programming (with fossil pollen data)" for SSoQE 2024.
+<img src="https://ssoqe.github.io/SSoQE_website/photos/SSOQE_logo3.png" width="150" alt="SSoQE logo">
 
-## Presentation
+# Functional Programming in the World of AI
 
-This lecture has a build-in presentation, which is accesible [here](https://ssoqe.github.io/SSoQE-Functional_Programming_with_fossil_pollen_data/)
+**SSoQE 2026 · Wednesday, 16 September · 09:00–10:30**
 
-## Structure and content
+[SSoQE website](https://ssoqe.github.io/SSoQE_website/) · [2026 programme](https://ssoqe.github.io/SSoQE_website/About/program.html)
 
-```plaintext
-├─ Data
-|   ├─ Input
-|   ├─ Processed
-|   └─ Temp
-├─ docs
-|   ├─ presentation_files
-|   └─ index.html
-├─ Presentation
-|   ├─ .gitignore
-|   ├─ color_palette.png
-|   ├─ custom_theme.scss
-|   ├─ presentation.qmd
-|   └─ render.R
-├─ R
-|   ├─ ___Init_project___.R
-|   ├─ 00_Config_file.R
-|   ├─ Exercises
-|   ├─ Functions
-|   └─ Project
-├─ renv
-|   ├─ activate.R
-|   ├─ library
-|   └─ settings.json
-├─ .gitignore
-├─ .Rprofile
-├─ SSoQE-Functional_Programming_with_fossil_pollen_data.Rproj
-├─ LICENSE
-├─ README.md
-└─ renv.lock
-```
 
-## Setup
+| **📅 Course information** | **🧰 Technical** | **📌 Status** |
+|:---:|:---:|:---:|
+| ![SSoQE 2026](https://img.shields.io/badge/SSoQE-2026-155560) | ![Type](https://img.shields.io/badge/Type-Course_Module-155560) | ![Status](https://img.shields.io/badge/Status-Active-509A8E) |
+| ![Day](https://img.shields.io/badge/Day-Wednesday-C2A337) | ![Topic](https://img.shields.io/badge/Topic-Programming_and_AI-155560) | ![Tools](https://img.shields.io/badge/Tools-R_%7C_Quarto-276DC3) |
 
-### Getting the repo
+</div>
 
-The project is accessible in two ways:
-  
-1. If a user has a [GitHub account](https://github.com/) and can use [git](https://git-scm.com/), the easiest way is to [clone the repo](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository).
-2. Use can download the latest [Release](https://github.com/SSoQE/SSoQE-Exploring_Past_Vegetation_Using_Fossil_Pollen/releases) of the Workflow as a zip file.
+## 🌿 About the lesson
 
-### Set up R project
+This 2026 lesson develops functional-programming skills for reliable ecological analysis in a world where code may also be drafted or reviewed with AI tools. Fossil-pollen workflows provide the working examples, but the main objective is to design small, explicit, testable functions and connect them into reproducible analyses.
 
-Once a user obtains their version of the project, there are several steps to be done before using it:
+The repository retains its historical name because the earlier version focused specifically on functional programming with fossil-pollen data.
 
-* Update [R](https://en.wikipedia.org/wiki/R_(programming_language)) and [R-studio IDE](https://posit.co/products/open-source/rstudio/). There are many guides on how to do so (e.g. [here](https://jennhuck.github.io/workshops/install_update_R.html))
-* Execute all individual steps with the `R/___Init_project___.R` script. This will result in the preparation of all R-packages using the [`{renv}` package](https://rstudio.github.io/renv/articles/renv.html), which is an R dependency management of your projects. Mainly it will install [`{RUtilpol}`](https://github.com/HOPE-UIB-BIO/R-Utilpol-package) and all dependencies. `{RUtilpol}` is used throughout the project as a version control of files.
-* Set up your preferences by editing the The Config file in `R/00_Config_file.R` script. The Config file is a script where all settings (configurations) and criteria used throughout the project are predefined by the user before running individual scripts. In addition, it prepares the current session by loading the required packages and saving all settings throughout the project.
+## 🎯 Learning goals
+
+By the end of the lesson, participants should be able to:
+
+- turn repeated analytical steps into reusable functions with explicit inputs and outputs;
+- separate orchestration code from reusable analytical logic;
+- use iteration and dependency-aware workflows instead of copying blocks of code;
+- evaluate AI-generated R code for correctness, clarity, reproducibility, and hidden assumptions.
+
+## 📚 Materials
+
+- `Presentation/presentation.qmd` is the existing slide source.
+- `R/Exercises/Functional project/` contains progressive functional-programming exercises.
+- `R/Exercises/Functional workflow/` contains a larger workflow exercise.
+- `R/Project/` contains the project workflow and reusable functions.
+- `Data/Input/sel_polygon.JSON` is an input used by the pollen workflow.
+
+The repository includes `renv.lock` and tracked `_targets/` metadata. Do not assume the metadata is current proof that the complete pipeline runs; verify the actual workflow entry point before execution.
+
+## 🚧 2026 revision status
+
+The title and scope now follow the 2026 programme. The current presentation still contains older SSoQE 2024 material, so its AI-focused revision remains teaching-content work rather than a README-only change.
+
+## 📄 Licence
+
+See [LICENSE](LICENSE).
