@@ -20,7 +20,7 @@
 
 This 2026 lesson develops functional-programming skills for reliable ecological analysis in a world where code may also be drafted or reviewed with AI tools. Fossil-pollen workflows provide the working examples, but the main objective is to design small, explicit, testable functions and connect them into reproducible analyses.
 
-The repository retains its historical name because the earlier version focused specifically on functional programming with fossil-pollen data.
+The earlier repository name emphasized the fossil-pollen examples. The 2026 repository identity follows the broader programme title while preserving those examples and their history.
 
 ## 🎯 Learning goals
 
