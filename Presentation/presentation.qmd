@@ -755,7 +755,7 @@ fig_penguins_beak_lm <-
 ## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
 
 ::::{.r-fit-text}
-* [💽go to R/Exercises/Functional project/Picea_CZ_TroughTime.R](https://github.com/SSoQE/SSoQE-Functional_Programming_with_fossil_pollen_data/blob/main/R/Exercises/Functional workflow/Picea_CZ_TroughTime.R)
+* [💽go to R/Exercises/Functional project/Picea_CZ_TroughTime.R](https://github.com/SSoQE/SSoQE-Functional_Programming_in_the_World_of_AI/blob/main/R/Exercises/Functional workflow/Picea_CZ_TroughTime.R)
 * Read to code to understand it.
 * Turn any code chunk into general function.
 
@@ -1048,7 +1048,7 @@ data_diversity_highlands <-
 ## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
 
 :::{.r-fit-text}
-* [💽go to R/Exercises/Functional project/Picea_CZ_TroughTime.R](https://github.com/SSoQE/SSoQE-Functional_Programming_with_fossil_pollen_data/blob/main/R/Exercises/Functional workflow/Picea_CZ_TroughTime.R)
+* [💽go to R/Exercises/Functional project/Picea_CZ_TroughTime.R](https://github.com/SSoQE/SSoQE-Functional_Programming_in_the_World_of_AI/blob/main/R/Exercises/Functional workflow/Picea_CZ_TroughTime.R)
 * Split the analysis into separate scripts.
 :::
 
@@ -1441,9 +1441,9 @@ targets::tar_visnetwork(
 ## [This presentation]{.bold .r-fit-text} {.title}
 
 ::: {.r-fit-text}
-[😸 Code on GitHub](https://github.com/SSoQE/SSoQE-Functional_Programming_with_fossil_pollen_data)
+[😸 Code on GitHub](https://github.com/SSoQE/SSoQE-Functional_Programming_in_the_World_of_AI)
 
-[🖥️ Slides](https://ssoqe.github.io/SSoQE-Functional_Programming_with_fossil_pollen_data/)
+[🖥️ Slides](https://ssoqe.github.io/SSoQE-Functional_Programming_in_the_World_of_AI/)
 
 [![](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 :::
