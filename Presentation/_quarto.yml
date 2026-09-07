@@ -1,0 +1,16 @@
+project:
+  title: "SSoQE - Functional Programming in the World of AI"
+  pre-render: "../R/00_Config_file.R"
+
+format:
+  revealjs:
+    width: 1600
+    height: 900
+    margin: 0.06
+    slide-number: true
+    theme: [default, custom_theme.scss]
+    embed-resources: true
+    preview-links: auto
+    output-file: "index"
+    output-ext: "html"
+    highlight-style: github-light
