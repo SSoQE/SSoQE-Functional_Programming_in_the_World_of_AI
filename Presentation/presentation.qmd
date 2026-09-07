@@ -1,83 +1,176 @@
----
-format: 
-  revealjs:
-    slide-number: true
-    theme: [default, custom_theme.scss]
-    embed-resources: true
-    preview-links: auto
-    output-file: "index"
-    output-ext: "html"
----
-
 ```{r}
 #| label: setup
 #| include: false
 options(htmltools.dir.version = FALSE)
 knitr::opts_chunk$set(
-  fig.width = 7,
+  fig.width = 8,
   fig.height = 5,
   fig.align = "center",
-  out.width = "100%"
+  out.width = "100%",
+  warning = FALSE,
+  message = FALSE
 )
 
-if(!require("countdown")) install.packages("countdown")
+here::i_am("Presentation/presentation.qmd")
 
-library(countdown)
-
-if(!require("tidyverse")) install.packages("tidyverse")
-
-library(tidyverse)
-
-if(!require("palmerpenguins")) install.packages("palmerpenguins")
-
-library(palmerpenguins)
-
-if(!require("targets")) install.packages("targets")
-
-library(targets)
-
-if(!require("visNetwork")) install.packages("visNetwork")
-
-library(visNetwork)
-
-if(!require("ggpubr")) install.packages("ggpubr")
-
-library(ggpubr)
-
-if(!require("neotoma2")) install.packages("neotoma2")
-
-library(neotoma2)
-
-include_local_figure <- function(data_source) {
-  knitr::include_graphics(
-    path = here::here(
-      "docs/Materials",
-      data_source
-    ),
-    error = TRUE
-  )
-}
-
+set.seed(900723)
 ```
 
-# [Functional Programming]{.bold .r-fit-text} {.title}
+# {.title}
 
-[with Fossil Pollen data]{.bold}
+```{r}
+#| label: title-colors
+#| include: false
+source(
+  here::here(
+    "R/set_r_theme.R"
+  )
+)
+```
+<br>
+
+:::: {.columns}
+
+::: {.column width="80%"}
+:::
+
+::: {.column width="20%"}
+
+```{r}
+#| label: ssoqe-logo-title
+#| echo: false
+#| fig-alt: "Science School on Quantitative Ecology logo."
+knitr::include_graphics(
+  here::here("Presentation/Materials/Logos/SSOQE_logo3.png")
+)
+```
+
+:::
+
+::::
+
+:::: {.r-hstack}
+::: {data-id="box1" style="background: `r ssoqe_cols["black"]`; width: 135px; height: 15px; margin: 0px;"}
+:::
+
+::: {data-id="box2" style="background: `r ssoqe_cols["cambridge_blue"]`; width: 405px; height: 15px; margin: 0px;"}
+:::
+
+::: {data-id="box3" style="background: `r ssoqe_cols["persian_green"]`; width: 225px; height: 15px; margin: 0px;"}
+:::
+
+::: {data-id="box4" style="background: `r ssoqe_cols["satin_sheen_gold"]`; width: 135px; height: 15px; margin: 0px;"}
+:::
+::::
+
+::: {.text-color-white .text-font-heading .text-size-heading2 .text-bold}
+Functional Programming in the World of AI
+:::
+
+::: {.text-color-white .text-size-heading4}
+Palmer Penguins, reusable functions, and tests
+:::
+
+:::: {.columns}
+
+::: {.column width="20%"}
+:::
+
+::: {.column width="80%" .text-right .text-size-body}
+[👤](https://ondrejmottl.github.io/) Ondřej Mottl
+
+[Science School on Quantitative Ecology 2026](https://ssoqe.github.io/SSoQE_website/){.text-color-black}
+:::
+
+::::
+
+::: {.notes}
+Timing: 0:00 to 1:00. Welcome participants. Explain that the session uses ordinary R code and asks how we can keep it understandable and checkable when people or AI agents change it quickly.
+:::
+
+## Reproducibility at function scale
 
 <br>
 
-Ondřej Mottl
+:::: {.columns}
 
-[Science School of Quantitative Ecology 2024](bit.ly/SSoQE)
+::: {.column width="43%"}
 
-# [A function]{.bold .r-fit-text} {.title}
+<figure>
+<a href="https://xkcd.com/1319/"><img src="Materials/Figures/xkcd-automation.png"
+     alt="XKCD Automation contrasts the hoped-for reduction in work with the reality of continuing debugging and development."
+     style="height:465px; width:auto;"></a>
+<figcaption>xkcd #1319, <a href="https://xkcd.com/1319/">Automation</a> · CC BY-NC 2.5</figcaption>
+</figure>
+
+:::
+
+::: {.column width="54%" .text-center}
+
+<br>
+<br>
+<br>
+
+::: {.blockquote .fragment}
+Can someone (or an AI agent) change the code without breaking its behaviour?
+:::
+
+::: {.fragment .text-center}
+**Change needs feedback!**
+:::
+
+:::
+
+::::
+
+::: {.notes}
+Timing: 1:00 to 3:00. Connect to the earlier reproducibility lesson and give participants time to read the comic. Ask whether automation removes work or shifts it towards specifying, checking, and maintaining code. Reveal the question, take one response, then reveal the need for feedback.
+
+[Sources]
+
+- Comic: Randall Munroe, xkcd #1319, "Automation": https://xkcd.com/1319/
+- Licence: Creative Commons Attribution-NonCommercial 2.5: https://xkcd.com/license.html
+:::
+
+## Learning outcomes
+
+<br>
+
+By the end, you can:
+
+::: {.incremental}
+- write a function with explicit arguments and a stable return contract
+- create paired function and test files with `{usethis}`
+- reduce repetitive code with `purrr::map()`
+- safeguard input with `{assertthat}`
+- make unit tests with `{testthat}`
+:::
+
+::: {.notes}
+Timing: 3:00 to 5:00. Read the outcomes briefly and point out the progression: write a function, repeat it with a functional, check its inputs, then test its behaviour. Every practical task uses Palmer Penguins measurements.
+:::
+
+# [A function]{.text-bold .r-fit-text} {.title}
+
+::: {.notes}
+Timing: 5:00 to 6:00. Introduce the first section. Participants already call functions every day; the next slides make their structure explicit before participants create one.
+:::
 
 ## What is a `function` in R?
 
+```{r}
+#| label: function-example-data
+#| include: false
+penguin_bill_length <-
+  stats::na.omit(
+    palmerpenguins::penguins$bill_length_mm
+  )
+```
+
 <br>
 
-::: {.blockquote}
-A function is a block of code which only runs when it is called.
+::: {.blockquote .fragment}
+A function is a block of code that runs when it is called.
 :::
 
 <br>
@@ -86,48 +179,70 @@ A function is a block of code which only runs when it is called.
 ```{r}
 #| label: basic-function-example
 #| echo: true
-mean(x = c(1, 2, 3, 4, 5))
+mean(x = penguin_bill_length)
 ```
 :::
 
+<br>
+
+
 ::: {.fragment}
 ```{r}
-#| label: basic-function-example2
+#| label: basic-function-source
 #| echo: true
 #| eval: false
-function (x, trim = 0, na.rm = FALSE, ...) 
-{
-    if (!is.numeric(x) && !is.complex(x) && !is.logical(x)) {
-        warning("argument is not numeric or logical: returning NA")
-        return(NA_real_)
-    }
-    if (isTRUE(na.rm)) 
-        x <- x[!is.na(x)]
-    if (!is.numeric(trim) || length(trim) != 1L) 
-        stop("'trim' must be numeric of length one")
-    n <- length(x)
-    if (trim > 0 && n) {
-        if (is.complex(x)) 
-            stop("trimmed means are not defined for complex data")
-        if (anyNA(x)) 
-            return(NA_real_)
-        if (trim >= 0.5) 
-            return(stats::median(x, na.rm = FALSE))
-        lo <- floor(n * trim) + 1
-        hi <- n + 1 - lo
-        x <- sort.int(x, partial = unique(c(lo, hi)))[lo:hi]
-    }
-    .Internal(mean(x))
+function(x, trim = 0, na.rm = FALSE, ...) {
+  if (isTRUE(na.rm)) {
+    x <- x[!is.na(x)]
+  }
+
+  # validation and trimming happen here
+
+  .Internal(mean(x))
 }
 ```
 :::
 
-## Parameters / Arguments
+
+::: {.notes}
+Timing: 6:00 to 8:00. Ask participants for familiar functions before revealing `mean()`. Use the short source excerpt to distinguish the visible call from the implementation it triggers. The aim is recognition, not a formal taxonomy.
+:::
+
+## Functions everywhere!
+
+<br>
+
+::: {.fragment .text-center}
+Which R functions have you already called today? 🤔
+:::
+
+<br>
+
+::: {.fragment}
+
+```{r}
+#| label: functions-everywhere-code
+#| echo: true
+#| eval: false
+mean(penguin_bill_length)
+sd(penguin_bill_length)
+seq(1, 10, 2)
+1 + 1
+penguin_bill_length[1]
+```
+
+:::
+
+::: {.notes}
+Timing: 8:00 to 9:00. Ask which functions participants have called today. Reveal the examples and point out that operators such as `+` and `[` are functions too.
+:::
+
+## Parameters and arguments
 
 <br>
 
 ::: {.blockquote}
-You can pass data, known as parameters/arguments, into a function.
+Arguments pass data and choices into a function.
 :::
 
 <br>
@@ -144,1308 +259,1303 @@ seq(
 ```
 :::
 
-## Arguments matching
+::: {.notes}
+Timing: 9:00 to 11:00. Point to the function name and each named argument in `seq()`. Distinguish a parameter in the function definition from the argument value supplied in a call.
+:::
+
+## Argument matching
 
 ```{r}
-#| label: argument-matching-1
-#| echo: true
-# create some data
-mydata <- rnorm(100)
+#| label: argument-matching-data
+#| include: false
+penguin_bill_length <-
+  stats::na.omit(
+    palmerpenguins::penguins$bill_length_mm
+  )
 ```
 
 <br>
 
-::: {.fragment}
-```{r}
-#| label: argument-matching-2
-#| echo: true
-sd(mydata)
-```
+::: {.incremental}
+
+- `sd(penguin_bill_length)`
+- `sd(x = penguin_bill_length)`
+- `sd(x = penguin_bill_length, na.rm = FALSE)`
+- `sd(na.rm = FALSE, x = penguin_bill_length)`
+- `sd(na.rm = FALSE, penguin_bill_length)`
+
 :::
-
-::: {.fragment}
-```{r}
-#| label: argument-matching-3
-#| echo: true
-sd(x = mydata)
-```
-:::
-
-::: {.fragment}
-```{r}
-#| label: argument-matching-4
-#| echo: true
-sd(x = mydata, na.rm = FALSE)
-```
-:::
-
-::: {.fragment}
-```{r}
-#| label: argument-matching-5
-#| echo: true
-sd(na.rm = FALSE, x = mydata)
-```
-:::
-
-::: {.fragment}
-```{r}
-#| label: argument-matching-6
-#| echo: true
-sd(na.rm = FALSE, mydata)
-```
-:::
-
-## Creating a function - reason
-
-```{r}
-#| label: create-function-reason-1
-#| echo: true
-a <- rnorm(5)
-b <- rnorm(5)
-c <- rnorm(5)
-d <- rnorm(5)
-```
 
 <br>
 
-::: {.fragment}
+::: {.fragment .text-center}
+Which call is the safest and easiest to read?
+:::
+
+::: {.notes}
+Timing: 11:00 to 13:00. Reveal the calls one at a time and ask participants which they would want to review six months later. Named arguments make intent visible; positional matching remains legal but becomes harder to read.
+:::
+
+## Creating a function: the reason
+
 ```{r}
-#| label: create-function-reason-2
+#| label: create-function-reason-data
+#| include: false
+penguin_measurements <-
+  palmerpenguins::penguins |>
+  dplyr::select(
+    bill_length_mm,
+    bill_depth_mm,
+    flipper_length_mm,
+    body_mass_g
+  ) |>
+  stats::na.omit()
+
+bill_length <- penguin_measurements$bill_length_mm
+bill_depth <- penguin_measurements$bill_depth_mm
+flipper_length <- penguin_measurements$flipper_length_mm
+body_mass <- penguin_measurements$body_mass_g
+```
+
+
+<br>
+
+```{r}
+#| label: create-function-reason-code
 #| echo: true
 #| eval: false
-(a - min(a)) / (max(a) - min(a))
-(b - min(b)) / (max(b) - min(b))
-(c - min(c)) / (max(c) - min(c))
-(d - min(d)) / (max(d) - min(d))  
+(bill_length - min(bill_length)) / diff(range(bill_length))
+(bill_depth - min(bill_depth)) / diff(range(bill_depth))
+(flipper_length - min(flipper_length)) / diff(range(flipper_length))
+(body_mass - min(body_mass)) / diff(range(body_mass))
 ```
-:::
 
 <br>
+
+
+::: {.fragment .text-center}
+Four penguin measurements. Four opportunities to make typo or mistake 🙃
+:::
+
 
 ::: {.fragment}
 
 ```{r}
-#| label: create-function-reason-3
+#| label: create-function-reason-code-example
 #| echo: true
 #| eval: false
-(█ - min(█)) / (max(█) - min(█))
+(█ - min(█)) / diff(range(█))
 ```
+
 :::
 
+::: {.notes}
+Timing: 13:00 to 15:00. Let participants identify the repeated structure and the changing measurement. Reveal the generic expression only after they name the pattern. Use the four copies as the motivation for writing one function.
+:::
 
-## DRY - Don't Repeat Yourself
-
-<br>
+## DRY: Don't Repeat Yourself
 
 ::: {.blockquote}
-
-If you have to repeat the **same code** [more than twice]{.text-color-highlight-primary}, it is a good idea to create a [function]{.text-color-highlight-secondary}.
-
+If the same code appears more than twice, consider writing a function.
 :::
 
+
+```{r}
+#| label: dry-meme
+#| echo: false
+#| eval: true
+#| fig-alt: >-
+#|   A meme shows Bart Simpson writing “I don't want to repeat myself”
+#|   repeatedly on a chalkboard.
+knitr::include_graphics(
+  here::here("Presentation/Materials/Figures/dry-meme.webp")
+)
+```
+
+::: {.footer}
+[No More Alpha: The Best Way to Mutate Data in Next.js 13 Without Touching Server Actions?](https://medium.com/@arthureberle.dev/no-more-alpha-the-best-way-to-mutate-data-in-next-js-13-without-touching-server-actions-b0e16522418)
+:::
+
+::: {.notes}
+Timing: 15:00 to 16:00. Let the meme land, then present DRY as a useful warning sign rather than an absolute law. Repeated code matters because copies can drift or acquire different mistakes.
+:::
 
 ## Creating a function
 
+<br>
+
+::: {.fragment}
+
 ```{r}
-#| label: create-function
-#| eval: false
+#| label: create-function-template
 #| echo: true
+#| eval: false
 my_function <- function(<arguments>) {
-  ## Do something interesting
+  # do something
+  return(<result>)
 }
 ```
+:::
 
 <br>
 
 ::: {.fragment}
+
 ```{r}
 #| label: create-function-example
 #| echo: true
+#| eval: true
 rescale_to_01 <- function(x) {
-  (x - min(x)) / (max(x) - min(x))
+  result <-
+    (x - min(x)) /
+      (max(x) - min(x))
+
+  return(result)
 }
 ```
+
 :::
 
 <br>
 
-::: {.fragment}
+::: {.fragment .text-center}
+
 ```{r}
-#| label: create-function-example2
+#| label: create-function-result
 #| echo: true
-rescale_to_01(c(-10, 0, 10))
+#| eval: true
+rescale_to_01(x = c(-10, 1, 10))
 ```
+
 :::
 
-## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
-
-:::{.r-fit-text}
-1. What are your experiences with making functions?
-2. How can we improve the function `rescale_to_01`?
+::: {.notes}
+Timing: 16:00 to 18:00. Reveal the generic function skeleton, then map it onto `rescale_to_01()`: name, arguments, body, result object, and explicit return value. Finish by reading the example output.
 :::
 
-```{r}
-#| label: create-function-exercise
-#| echo: true
-rescale_to_01 <- function(x) {
-  (x - min(x)) / (max(x) - min(x))
-}
+## Create the penguin function 💻 {.exercise .text-center}
+
+<br>
+
+::: {.blockquote}
+
+**With a partner:** create the function file.
+
+```r
+usethis::edit_file(
+  here::here("R/Functions/mean_penguin_measurement.R")
+)
 ```
 
 <br>
 
-::: {.fragment}
-```{r}
-#| label: create-function-exercise2
-#| echo: true
-rescale_to_01 <- function(x) {
-  x_range <- 
-    range(x, na.rm = TRUE, finite = TRUE)
-  res <- 
-    (x - x_range[1]) / (x_range[2] - x_range[1])
-  return(res)
-}
-```
+
+Create `mean_penguin_measurement(x, na_rm = FALSE)` and state its return contract.
+
 :::
 
-`r countdown(minutes = 3)`
-
-# [Functionals]{.bold .r-fit-text} {.title}
-
-## Functionals
-
-```{r}
-#| label: functional-meme
-include_local_figure("functional_meme.png")
-```
+`r countdown::countdown(minutes = 4)`
 
 ::: footer
-[https://www.reddit.com/r/ProgrammerHumor/](https://www.reddit.com/r/ProgrammerHumor/comments/a5ggzi/functions/)
+[`usethis::edit_file()` documentation](https://usethis.r-lib.org/reference/edit_file.html)
 :::
 
+::: {.notes}
+Timing: 18:00 to 22:00. Ask participants to work with a partner and open Task 1 in `R/Exercises/01_functionals.R`. They use `usethis::edit_file()` to create the function in `R/Functions/`. Success means one numeric vector produces one numeric mean and the missing-value choice has a clear default. Leave validation for the assertions exercise.
+:::
 
-## Functionals
+## Function debrief
+
+<br>
+
+```{r}
+#| label: function-debrief
+#| echo: true
+#| eval: false
+mean_penguin_measurement <- function(
+  x,
+  na_rm = FALSE
+) {
+  result <- mean(x, na.rm = na_rm)
+  return(result)
+}
+```
+
+<br>
+
+::: {.fragment}
+
+What should happen with `NA`, text, `Inf`, or an empty vector?
+
+:::
+
+::: {.notes}
+Timing: 22:00 to 24:00. Compare the function with the proposed contract. Ask what happens with `NA`, text, `Inf`, and an empty vector. Record two cases to revisit during assertions, without solving them yet.
+:::
+
+# [Functionals]{.text-bold .r-fit-text} {.title}
+
+::: {.notes}
+Timing: 24:00 to 25:00. Introduce functionals as the next step: one trusted function can be applied repeatedly without copying its body.
+:::
+
+## You can put a function into a function 🤯
+
+<br>
 
 :::: {.columns}
 
-::: {.column width="50%"}
+::: {.column width="42%"}
 
-A [functional]{.text-color-highlight-primary} is a [function]{.text-color-highlight-secondary} that 
+<br>
+<br>
+
+::: {.blockquote}
+A functional takes a function as input (parameter) and applies it to data according to a pattern.
+:::
+
+:::
+
+::: {.column width="56%"}
+
+<figure>
+<img src="Materials/Illustrations/functional_revelation.png"
+     alt="An ecology researcher has a delighted realisation while nested abstract function shapes float above a laptop."
+     style="width:100%; height:545px; object-fit:cover; object-position:68% center; border-radius:18px;">
+<figcaption>AI illustration created for SSoQE 2026.</figcaption>
+</figure>
+
+:::
+
+::::
+
+::: {.notes}
+Timing: 25:00 to 27:00. Read the definition, then ask whether passing a function into another function feels unusual or even illegal. Use the illustration as a playful pause before the formal diagram.
+:::
+
+## Functions and functionals
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="38%"}
+
+A functional is a function that:
 
 ::: {.incremental}
-* takes a [function]{.text-color-highlight-secondary} as an **input** 
-* and returns a [vector]{.text-color-highlight-terciary} as **output**
-:::
+
+- takes a function as input
+- applies it to other inputs
+- returns the collected result
 
 :::
 
-::: {.column width="45%" .fragment}
-```{r}
-#| label: functional-programming
-knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/1dff819e743f280bbab1c55f8f063e60b6a0d2fb/2269e/diagrams/fp.png")
-```
 :::
+
+::: {.column width="60%" .text-center .fragment}
+
+<figure>
+<a href="https://adv-r.hadley.nz/fp.html"><img src="Materials/Figures/advanced-r-fp.png"
+     alt="A two-by-two diagram classifies function patterns by whether vectors or functions are used as inputs and outputs."
+     style="width:100%; height:auto;"></a>
+<figcaption>Functions as inputs and outputs in functional programming.</figcaption>
+</figure>
+
+:::
+
 ::::
 
+::: {.notes}
+Timing: 27:00 to 29:00. Read the three-part definition and then reveal the Advanced R diagram. Focus on the lower-left cell: a functional takes a function and returns a vector. Use the other cells only for orientation.
+
+[Sources]
+
+- Diagram and functional-programming introduction: https://adv-r.hadley.nz/fp.html
+- Advanced R licence, CC BY-NC-SA 4.0: https://adv-r.hadley.nz/
+:::
+
+## `{purrr}`
+
 <br>
 
-::: {.fragment}
-Bjarne Stroustrup: 
+<figure style="text-align:center;">
+<a href="https://purrr.tidyverse.org/"><img src="Materials/Logos/purrr.png"
+     alt="The official purrr package hex logo, featuring a curled sleeping cat."
+     style="height:430px; width:auto;"></a>
+<figcaption><a href="https://purrr.tidyverse.org/"><code>{purrr}</code> documentation</a></figcaption>
+</figure>
 
-::: {.blockquote}
-To become significantly more reliable, code must become more transparent. In particular, nested conditions and loops must be viewed with great suspicion. Complicated control flows confuse programmers. Messy code often hides bugs.
-:::
-:::
+::: {.notes}
+Timing: 29:00 to 30:00. Introduce `{purrr}` through its logo and documentation link. Explain that the package supplies functionals for common iteration patterns.
 
-::: footer
-[Advanced R](https://adv-r.hadley.nz/fp.html)
-:::
+[Sources]
 
-## {purrr} package
-
-```{r}
-#| label: purrr-package
-knitr::include_graphics("https://purrr.tidyverse.org/logo.png")
-```
-
-::: footer
-[purrr.tidyverse.org](https://purrr.tidyverse.org/)
+- `{purrr}` documentation: https://purrr.tidyverse.org/
+- Official `{purrr}` hex sticker, CC0: https://github.com/rstudio/hex-stickers/blob/main/PNG/purrr.png
 :::
 
 ## `purrr::map()`
 
-```{r}
-#| label: purrr-map-vis
-knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/f0494d020aa517ae7b1011cea4c4a9f21702df8b/2577b/diagrams/functionals/map.png")
-```
+<br>
 
-::: footer
-[Advanced R](https://adv-r.hadley.nz/functionals.html)
+<figure style="text-align:center;">
+<a href="https://adv-r.hadley.nz/functionals.html"><img src="Materials/Figures/advanced-r-map.png"
+     alt="A list enters map; each element passes through the same function and the results form a new list."
+     style="width:78%; height:auto;"></a>
+<figcaption>One function is applied independently to each element.</figcaption>
+</figure>
+
+::: {.notes}
+Timing: 30:00 to 32:00. Trace one input element through the function and into the output, then repeat for the remaining elements. Emphasise that the function stays fixed while the element changes.
+
+[Sources]
+
+- Diagram: https://adv-r.hadley.nz/functionals.html
+- Advanced R licence, CC BY-NC-SA 4.0: https://adv-r.hadley.nz/
 :::
 
-## `purrr::map()` - name?
+## Why `map()`?
 
-Why `map()`?
+<br>
 
-::: {.fragment}
-From Math:
+From mathematics:
 
 ::: {.blockquote}
-an operation that associates each element of a given set with one or more elements of a second set
-:::
+An operation that associates each element of one set with an element of another set.
 :::
 
-## `purrr::map()`
+<br>
+
+::: {.fragment .text-center .text-size-heading3}
+One element in. One result out. Repeat.
+:::
+
+::: {.notes}
+Timing: 32:00 to 33:00. Connect the mathematical meaning of “map” to the previous diagram: every input element is associated with one result.
+:::
+
+## A first `map()`
+
+<br>
 
 ```{r}
-#| label: purrr-map-example-1
+#| label: purrr-map-add-one
 #| echo: true
-add_1 <- function(x){
+
+number_of_taxa <- c(10, 15, 25)
+
+add_1 <- function(x) {
   return(x + 1)
-} 
-
-```
-
-<br>
-
-::: {.fragment}
-
-```{r}
-#| label: purrr-map-example-2
-#| echo: true
-purrr::map(
-  .x = 1:3, 
-  .f = add_1
-  )
-```
-:::
-
-## `purrr::map()`
-
-`purrr::map()` returns list. There are other variants `purrr::map` that return different types of objects.
-
-* `purrr::map_dbl()` returns a numeric vector
-* `purrr::map_chr()` returns a character vector
-* `purrr::map_lgl()` returns a logical vector
-* `purrr::map_int()` returns an integer vector
-
-<br>
-
-::: {.fragment}
-```{r}
-#| label: purrr-map-example-3
-#| echo: true
-purrr::map_dbl(
-  .x = 1:3, 
-  .f = add_1
-  )
-```
-:::
-
-## `purrr::map()`
-
-```{r}
-# | label: purrr-map-vis-2
-knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/12f6af8404d9723dff9cc665028a35f07759299d/d0d9a/diagrams/functionals/map-list.png")
-```
-
-::: footer
-[Advanced R](https://adv-r.hadley.nz/functionals.html)
-:::
-
-## `purrr::map()`
-
-```{r}
-#| label: purrr-map-example-4
-#| echo: true
-my_list <-
-  list(
-    x = rnorm(5),
-    y = rnorm(5),
-    z = rnorm(5)
-  ) 
-```
-
-<br>
-
-::: {.fragment}
-
-```{r}
-#| label: purrr-map-example-5
-#| echo: true
-purrr::map_dbl(
-  .x = my_list, 
-  .f = mean
-  )
-```
-:::
-
-## `purrr::map()` - Anonymous functions
-
-```{r}
-#| label: purrr-map-anon-1
-#| echo: true
-get_length_of_unique <- function(x){
-  unique(x)  %>% 
-    length()  %>% 
-    return()
 }
 
-purrr::map_dbl(
-  .x = mtcars, 
-  .f = get_length_of_unique
-  )
-```
-
-<br>
-
-::: {.fragment}
-The magic of `~` ([tilde operator]{.text-color-highlight-primary}):
-
-```{r}
-#| label: purrr-map-anon-2
-#| echo: true
-purrr::map_dbl(
-  .x = mtcars,
-  .f = ~ unique(.x) %>%
-    length()
+purrr::map(
+  .x = number_of_taxa,
+  .f = add_1
 )
 ```
+
+
+::: {.notes}
+Timing: 33:00 to 35:00. Ask participants to predict the three outputs before running the code. Identify `.x` as the input collection and `.f` as the stable function, then point out that `map()` returns a list.
 :::
 
-## `purrr::map()` - Anonymous functions
+## Return shapes
 
-Tilde can be also used to combine custom and base functions.
-
-```{r}
-#| label: purrr-map-anon-3
-#| echo: true
-purrr::map_dbl(
-  .x = list(
-    x = rnorm(5),
-    y = rnorm(5),
-    z = rnorm(5)
-  ),
-  .f = ~ add_1(.x) %>%
-    mean()
-)
-```
-
-## [Functional workflow]{.r-fit-text} {.subtitle .textcenter}
-
-## Functional workflow - example
-
-The data will be using Palmer's `penguins` dataset.
+<br>
 
 :::: {.columns}
 
-::: {.column width="30%"}
+::: {.column width="56%" .text-center}
 
-```{r}
-#| label: purrr-advanced-data
-knitr::include_graphics("https://allisonhorst.github.io/palmerpenguins/reference/figures/palmerpenguins.png")
-```
+<figure>
+<img src="Materials/Figures/advanced-r-map-list.png"
+     alt="Three differently shaped list elements pass through the same function and produce three corresponding result elements."
+     style="width:100%; height:auto;">
+<figcaption><code>map()</code> always collects a list.</figcaption>
+</figure>
 
 :::
 
-::: {.column width="65%"}
+::: {.column width="42%" .incremental}
 
-```{r}
-#| label: purrr-advanced-data2
-knitr::include_graphics("https://allisonhorst.github.io/palmerpenguins/reference/figures/lter_penguins.png")
-```
+- `map()` returns a list
+- `map_dbl()` returns numbers
+- `map_chr()` returns text
+- `map_lgl()` returns logical values
+
 :::
 
 ::::
 
-::: footer
-[Palmer penguins dataset](https://allisonhorst.github.io/palmerpenguins/)
-:::
-
-## Functional workflow - example
-
-```{r}
-#| label: purrr-advanced-data3
-#| echo: true
-library(palmerpenguins)
-head(penguins)
-```
-
-## Functional workflow - example
-
-The goal is to plot the relationship between `bill_length_mm` and `bill_depth_mm` for each species.
-
-```{r}
-#| label: purrr-advanced-data4
-knitr::include_graphics("https://allisonhorst.github.io/palmerpenguins/reference/figures/culmen_depth.png")
-```
-
-::: footer
-[Palmer penguins dataset](https://allisonhorst.github.io/palmerpenguins/)
-:::
-
-## Functional workflow - example
-
-```{r}
-#| label: purrr-advanced
-#| echo: true
-data_penguins_by_species <-
-  penguins %>%
-  tidyr::nest(data_nested = -species)
-```
-
 <br>
 
 ::: {.fragment}
 ```{r}
-#| label: purrr-advanced2
+#| label: purrr-map-double
 #| echo: true
-print(data_penguins_by_species)
-```
-:::
-
-## Functional workflow - example {auto-animate="true"}
-
-```{r}
-#| label: purrr-advanced3
-#| echo: true
-data_penguins_by_species_lm <-
-  data_penguins_by_species %>%
-  dplyr::mutate(
-    model = purrr::map(
-      .x = data_nested,
-      .f = ~ stats::lm(bill_length_mm ~ bill_depth_mm, data = .x)
-    )
-  )
-```
-
-## Functional workflow - example {auto-animate="true"}
-
-```{r}
-#| label: purrr-advanced4
-#| echo: true
-data_penguins_by_species_lm <-
-  data_penguins_by_species %>%
-  dplyr::mutate(
-    model = purrr::map(
-      .x = data_nested,
-      .f = ~ stats::lm(bill_length_mm ~ bill_depth_mm, data = .x)
-    ),
-    model_coef = purrr::map(
-      .x = model,
-      .f = ~ stats::coef(.x)
-    )
-  )
-```
-
-## Functional workflow - example {auto-animate="true"}
-
-```{r}
-#| label: purrr-advanced5
-#| echo: true
-data_penguins_by_species_lm <-
-  data_penguins_by_species %>%
-  dplyr::mutate(
-    model = purrr::map(
-      .x = data_nested,
-      .f = ~ stats::lm(bill_length_mm ~ bill_depth_mm, data = .x)
-    ),
-    model_coef = purrr::map(
-      .x = model,
-      .f = ~ stats::coef(.x)
-    ),
-    plot = purrr::map2(
-      .x = data_nested,
-      .y = model_coef,
-      .f = ~ ggplot2::ggplot(
-        data = .x,
-        mapping = ggplot2::aes(x = bill_depth_mm, y = bill_length_mm)
-      ) +
-        ggplot2::geom_point() +
-        ggplot2::geom_abline(
-          intercept = .y[[1]],
-          slope = .y[[2]],
-          col = "red"
-        ) +
-        ggplot2::coord_cartesian(
-           xlim = range(penguins$bill_depth_mm, na.rm = TRUE),
-          ylim = range(penguins$bill_length_mm, na.rm = TRUE)
-        ) 
-    )
-  )
-```
-
-## Functional workflow - example
-
-```{r}
-#| label: purrr-advanced6
-#| echo: true
-print(data_penguins_by_species_lm)
-```
-
-<br>
-
-::: {.fragment}
-
-```{r}
-#| label: purrr-advanced7
-#| echo: true
-#| fig.height: 2
-ggpubr::ggarrange(
-  plotlist = data_penguins_by_species_lm$plot,
-  labels = data_penguins_by_species_lm$species,
-  ncol = 3
+purrr::map_dbl(
+  .x = 1:3,
+  .f = add_1
 )
 ```
-
 :::
 
-## Functional workflow - example 
+::: {.notes}
+Timing: 35:00 to 38:00. Compare the diagram with the typed variants. The function still runs once per element; the suffix constrains the collected output. Ask why `map_dbl()` is appropriate when every call returns one number.
 
-Figure with a single call.
+[Sources]
+
+- Diagram: https://adv-r.hadley.nz/functionals.html
+- Advanced R licence, CC BY-NC-SA 4.0: https://adv-r.hadley.nz/
+:::
+
+## Anonymous functions: `~` and `.x`
 
 ```{r}
-#| label: purrr-advanced8
-#| echo: true
-#| eval: false
-fig_penguins_beak_lm <-
- penguins %>%
-  tidyr::nest(data_nested = -species)
-  dplyr::mutate(
-    model = purrr::map(
-      .x = data_nested,
-      .f = ~ stats::lm(bill_length_mm ~ bill_depth_mm, data = .x)
-    ),
-    model_coef = purrr::map(
-      .x = model,
-      .f = ~ stats::coef(.x)
-    ),
-    plot = purrr::map2(
-      .l = list(
-        data_nested,
-        model_coef,
-        species
-      ),
-      .f = ~ ggplot2::ggplot(
-        data = ..1,
-        mapping = ggplot2::aes(x = bill_depth_mm, y = bill_length_mm)
-      ) +
-        ggplot2::geom_point() +
-        ggplot2::geom_abline(
-          intercept = ., 2[[1]],
-          slope = ..2[[2]],
-          col = "red"
-        ) +
-        ggplot2::coord_cartesian(
-           xlim = range(penguins$bill_depth_mm, na.rm = TRUE),
-          ylim = range(penguins$bill_length_mm, na.rm = TRUE)
-        ) +
-        ggplot2::labs(
-          title = ..3
-        )
-    )
-  ) %>%
-  purrr::chuck("plot") %>%
-  ggpubr::ggarrange(
-    plotlist = .,
-    ncol = 3
+#| label: anonymous-penguin-data
+#| include: false
+penguin_measurements <-
+  palmerpenguins::penguins |>
+  dplyr::select(
+    bill_length_mm,
+    bill_depth_mm,
+    flipper_length_mm,
+    body_mass_g
   )
 ```
 
-## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
-
-::::{.r-fit-text}
-* [💽go to R/Exercises/Functional project/Picea_CZ_TroughTime.R](https://github.com/SSoQE/SSoQE-Functional_Programming_in_the_World_of_AI/blob/main/R/Exercises/Functional workflow/Picea_CZ_TroughTime.R)
-* Read to code to understand it.
-* Turn any code chunk into general function.
-
-::: {.fragment}
-bonus: Try to use `{purrr}` package
-::: 
-
-::::
-
-`r countdown(minutes = 5)`
-
-# [Functional project]{.bold .r-fit-text} {.title}
-
-## Functional project
-
-We wrote a very usefull function that loads and cleans a csv file.
-
-```{r}
-#| label: f-project-reason-fc_example
-#| echo: true
-#| eval: false
-load_and_clean_csv <- function(file_name){
-  file_name  %>% 
-    readr::read_csv(file = .) %>%
-    janitor::clean_names()  %>% 
-    return()
-}
-```
-
-## Functional project
-
-```{r}
-#| eval: false
-#| echo: true
-# .
-# └─my_awesome_project/
-#   ├─ Data/
-#   |   ├─ Input/
-#   |   |  ├─ vegetation_lowlands.csv
-#   |   |  └─ vegetation_highlands.csv
-#   |   └─ Processed/
-#   ├─ R/
-#   |   ├─ 01_Estimate_diversity.R
-#   |   └─ 02_Fit_diversity_model.R
-```
+<br>
 
 :::: {.columns}
 
 ::: {.column width="49%" .fragment}
+
+### Named function
+
 ```{r}
-#| label: f-project-reason-diversity-1
+#| label: named-unique-function
 #| echo: true
 #| eval: false
-#| code-line-numbers: "|5-9"
-# 01_Estimate_diversity.R:
-# <Header>
-
-# define helper function
-load_and_clean_csv <- function(file_name){
-  file_name  %>% 
-    readr::read_csv(file = .) %>%
-    janitor::clean_names()  %>% 
-    return()
+count_observed <- function(x) {
+  result <- sum(!is.na(x))
+  return(result)
 }
 
-# load data
-data_vegetation_lowlands <- 
-  load_and_clean_csv("Data/Input/vegetation_lowlands.csv")
-
-data_vegetation_highlands <- 
-  load_and_clean_csv("Data/Input/vegetation_highlands.csv")
-
-# <Estimate diversity> ...
+purrr::map_dbl(
+  .x = penguin_measurements,
+  .f = count_observed
+)
 ```
 
 :::
 
-::: {.column width="50%" .fragment}
+::: {.column width="49%" .fragment}
+
+### Anonymous function
+
 ```{r}
-#| label: f-project-reason-model-1
+#| label: anonymous-unique-function
 #| echo: true
-#| eval: false
-#| code-line-numbers: "|5-9"
-# 02_Fit_diversity_model.R:
-# <Header>
-
-# define helper function
-load_and_clean_csv <- function(file_name){
-  file_name  %>% 
-    readr::read_csv(file = .) %>%
-    janitor::clean_names()  %>% 
-    return()
-}
-
-# load data
-data_diversity_lowlands <- 
-  load_and_clean_csv("Data/Processed/diversity_lowlands.csv")
-
-data_diversity_highlands <-
-  load_and_clean_csv("Data/Processed/diversity_highlands.csv")
-
-# <Fit models> ...
+purrr::map_dbl(
+  .x = penguin_measurements,
+  .f = ~ sum(!is.na(.x))
+)
 ```
+
+`~` starts the function.
+
+`.x` is the current measurement.
+
 :::
+
 ::::
 
-## Functional project
-
-Now we want to edit the function to also include {here} package.
-
-::: {.fragment}
-
-```{r}
-#| label: f-project-reason-fc_example2
-#| echo: true
-#| eval: false
-#| code-line-numbers: "|3"
-load_and_clean_csv <- function(file_name){
-  file_name  %>% 
-    here::here() %>%
-    readr::read_csv(file = .) %>%
-    janitor::clean_names()
-}
-```
+::: footer
+[Ondřej's R code convention: anonymous functions](https://ondrejmottl.github.io/collaboration/code_convention.html#anonymous-functions)
 :::
 
-::: {.fragment}
-We would need to edit the function in [every]{.text-color-highlight-primary} script!!
+::: {.notes}
+Timing: 38:00 to 41:00. Compare the named and anonymous versions line by line. Explain that `~` starts the formula shorthand and `.x` represents the current measurement. Prefer a named function when logic will be reused or becomes difficult to read.
 :::
 
-## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
+# [Functional workflow]{.text-bold .r-fit-text} {.title}
 
-:::{.r-fit-text}
-How would you solve the problem with the function?
+::: {.notes}
+Timing: 41:00 to 42:00. Introduce the ecological workflow. The same analysis will run separately for three penguin species.
 :::
 
-`r countdown(minutes = 3)`
+## Palmer penguins
 
-## Functional project
-
-```{r}
-#| eval: false
-#| echo: true
-#| code-line-numbers: "|12"
-# .
-# └─my_awesome_project/
-#   ├─ Data/
-#   |   ├─ Input/
-#   |   |  ├─ vegetation_lowlands.csv
-#   |   |  └─ vegetation_highlands.csv
-#   |   └─ Processed/
-#   ├─ R/
-#   |   ├─ 01_Estimate_diversity.R
-#   |   └─ 02_Fit_diversity_model.R
-#   |   └─ Functions/
-#   |       └─ load_and_clean_csv.R
-```
+<br>
 
 :::: {.columns}
 
-::: {.column width="49%"}
+::: {.column width="28%" .text-center}
+
+<figure style="margin:0;">
+<img src="Materials/Figures/palmerpenguins-art.png"
+     alt="Illustrated Adelie, Chinstrap, and Gentoo penguins above the palmerpenguins package name."
+     style="width:100%; height:auto;">
+<figcaption style="font-size:0.58em;">The <code>{palmerpenguins}</code> teaching dataset.</figcaption>
+</figure>
+
+:::
+
+::: {.column width="69%" .text-center}
+
+<figure style="margin:0;">
+<img src="Materials/Figures/lter-penguins.png"
+     alt="Watercolour illustrations compare the appearance of Adelie, Chinstrap, and Gentoo penguins."
+     style="width:100%; height:430px; object-fit:contain;">
+<figcaption style="font-size:0.58em;">Adelie, Chinstrap, and Gentoo penguins.</figcaption>
+</figure>
+
+:::
+
+::::
+
+::: footer
+[Artwork and data: Allison Horst and Palmer Station LTER, CC0](https://allisonhorst.github.io/palmerpenguins/)
+:::
+
+::: {.notes}
+Timing: 42:00 to 44:00. Name Adelie, Chinstrap, and Gentoo and orient participants to the `{palmerpenguins}` dataset. Keep this biological introduction brief and visual.
+:::
+
+## The biological question
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="48%"}
+
+::: {.fragment .blockquote}
+Plot the relationship between bill length and bill depth for each species.
+:::
+
+::: {.fragment}
+Can one workflow repeat the same analysis for Adelie, Chinstrap, and Gentoo penguins?
+:::
+
+:::
+
+::: {.column width="50%" .text-center}
+
+<figure style="margin:0;">
+<img src="Materials/Figures/penguin-anatomy.png"
+     alt="Diagram showing where bill length and bill depth are measured on a penguin's head."
+     style="width:100%; height:430px; object-fit:contain;">
+<figcaption style="font-size:0.58em;">Bill length and bill depth measurements.</figcaption>
+</figure>
+
+:::
+
+::::
+
+::: footer
+[Penguin artwork: Allison Horst, CC0](https://allisonhorst.github.io/palmerpenguins/)
+:::
+
+::: {.notes}
+Timing: 44:00 to 46:00. Show where bill length and bill depth are measured. Ask participants to identify the repeated unit in the question: the same relationship will be plotted once per species.
+:::
+
+## Split the data
+
+<br>
+
 ```{r}
-#| label: f-project-reason-diversity-2
+#| label: split-penguins-data
+#| include: false
+penguins <- palmerpenguins::penguins
+```
+
+```{r}
+#| label: split-penguins
+#| echo: true
+list_penguins_by_species <-
+  split(
+    x = penguins,
+    f = penguins$species
+  )
+
+str(list_penguins_by_species)
+```
+
+::: {.notes}
+Timing: 46:00 to 48:00. Explain that `split()` creates one data frame per species. Use `str()` to show that the result is a named list, which is the input shape expected by `map()`.
+:::
+
+## Map models and coefficients
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="52%"}
+```{r}
+#| label: map-penguin-models
+#| echo: true
+list_penguin_models <-
+  purrr::map(
+    .x = list_penguins_by_species,
+    .f = ~ stats::lm(
+      bill_length_mm ~ bill_depth_mm,
+      data = .x
+    )
+  )
+
+str(list_penguin_models, max.level = 1)
+```
+
+:::
+
+::: {.column width="48%" .fragment}
+```{r}
+#| label: map-penguin-coefficients
+#| echo: true
+list_penguin_coefs <-
+  purrr::map(
+    .x = list_penguin_models,
+    .f = ~ stats::coef(.x)
+  )
+
+list_penguin_coefs
+```
+:::
+
+::::
+
+::: {.notes}
+Timing: 48:00 to 51:00. Follow one species data frame into `lm()`, then show that the first `map()` returns three fitted models. The second `map()` takes those models as its inputs and extracts one coefficient vector from each. Keep the focus on the repeated structure rather than regression theory.
+:::
+
+## Map the figures
+
+```{r}
+#| label: map-penguin-plots
+#| echo: true
+list_penguin_plots <-
+  purrr::map2(
+    .x = list_penguins_by_species,
+    .y = list_penguin_coefs,
+    .f = ~ ggplot2::ggplot(
+      data = .x,
+      ggplot2::aes(bill_depth_mm, bill_length_mm)
+    ) +
+      ggplot2::geom_point(na.rm = TRUE) +
+      ggplot2::geom_abline(
+        intercept = .y[[1]],
+        slope = .y[[2]],
+        colour = "red"
+      )
+  )
+
+str(list_penguin_plots, max.level = 1)
+```
+
+::: {.notes}
+Timing: 51:00 to 54:00. Explain why this step needs `map2()`: `.x` is the species data frame and `.y` is its matching coefficient vector. Each pair produces one plot. Mention the red fitted line only as the visible result of the coefficients.
+:::
+
+## One workflow, three figures
+
+<br>
+
+```{r}
+#| label: show-penguin-plots
+#| echo: false
+#| fig-width: 12
+#| fig-height: 3.6
+#| fig-cap: >-
+#|   Bill length and bill depth with the mapped species-specific linear models.
+#| fig-alt: >-
+#|   Three side-by-side scatter plots for Adelie, Chinstrap, and Gentoo
+#|   penguins, each with a fitted straight line.
+list_penguin_plots |>
+  purrr::set_names(
+    nm = names(list_penguins_by_species)
+  ) |>
+  purrr::imap(
+    .f = ~ .x +
+      ggplot2::labs(
+        x = "Bill depth (mm)",
+        y = "Bill length (mm)",
+        title = .y
+      ) +
+      theme_ssoqe()
+  ) |>
+  cowplot::plot_grid(
+    plotlist = _,
+    nrow = 1
+  )
+```
+
+::: {.notes}
+Timing: 54:00 to 56:00. Read the three panels from left to right. Ask what remains the same across species and what changes. Return to the original question: one workflow produced one figure per species.
+:::
+
+## Extra: all in one pipe
+
+<br>
+
+```{r}
+#| label: map-penguin-figures-pipe
 #| echo: true
 #| eval: false
-#| code-line-numbers: "|4-8"
-# 01_Estimate_diversity.R:
-# <Header>
-
-source(
-  here::here(
-    "R/Functions/load_and_clean_csv.R"
+palmerpenguins::penguins |>
+  tidyr::nest(data_nested = -species)
+dplyr::mutate(
+  model = purrr::map(
+    .x = data_nested,
+    .f = ~ stats::lm(bill_length_mm ~ bill_depth_mm, data = .x)
+  ),
+  model_coef = purrr::map(
+    .x = model,
+    .f = ~ stats::coef(.x)
+  ),
+  plot = purrr::map2(
+    .x = data_nested,
+    .y = model_coef,
+    .f = ~ plot_penguin_figure(
+      data_source = .x,
+      vec_coefs = .y
     )
+  )
+) |>
+  purrr::chuck("plot") |>
+  cowplot::plot_grid(
+    plotlist = _,
+    ncol = 3
+  )
+```
+
+::: {.notes}
+Timing: 56:00 to 58:00. Present this as an optional compact version of the workflow participants have already seen. Trace one species data frame into a local model and then a plot; `map()` collects the three plots before `plot_grid()` combines them. The separated version remains easier to debug and review.
+:::
+
+
+## Map the penguin measurements  {.exercise .text-center}
+
+### 🐧
+
+<br>
+
+::: {.blockquote}
+
+Open `R/Exercises/01_functionals.R` and complete Tasks 1 and 2.
+
+1. Select the four numeric penguin measurements.
+2. Use `map_dbl()` with `mean_penguin_measurement()`.
+3. Check that you get one mean per column.
+
+:::
+
+`r countdown::countdown(minutes = 4)`
+
+::: {.notes}
+Timing: 58:00 to 62:00. Participants finish Tasks 1 and 2 in `R/Exercises/01_functionals.R`. Success means `measurement_means` is a named numeric vector of length four. Ask early finishers to compare one result with `mean(..., na.rm = TRUE)`.
+:::
+
+# [Assertions]{.text-bold .r-fit-text} {.title}
+
+::: {.notes}
+Timing: 62:00. Transition from repeating a function to protecting it. Ask what a caller or agent could supply besides the expected numeric vector.
+:::
+
+## `{assertthat}`
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="36%" .text-center}
+
+<br>
+
+<figure>
+<a href="https://search.r-project.org/CRAN/refmans/assertthat/html/assert_that.html"><img src="Materials/Logos/assertthat-course-hex.svg"
+     alt="A green SSoQE course hex badge for the assertthat package."
+     style="height:390px; width:auto;"></a>
+<figcaption>SSoQE course badge · <a href="https://search.r-project.org/CRAN/refmans/assertthat/html/assert_that.html">assertthat documentation</a></figcaption>
+</figure>
+
+:::
+
+::: {.column width="62%"}
+
+<br>
+<br>
+
+### The function has a door policy 🚪
+
+```
+Warning in mean.default(x):
+  argument is not numeric; returning NA
+```
+
+<br>
+
+::: {.fragment}
+### Better prevent with argument check
+
+```
+Error:
+  `x` must be a numeric vector.
+```
+:::
+
+:::
+
+::::
+
+::: {.notes}
+Timing: 62:00 to 64:00. Introduce `{assertthat}` through the course badge and documentation link. Compare the warning with the clearer boundary error and ask which message gives enough information to repair the call. Use the door policy as the metaphor for allowed inputs.
+
+[Sources]
+
+- `assert_that()` documentation: https://search.r-project.org/CRAN/refmans/assertthat/html/assert_that.html
+- The package has no sticker in the official RStudio or community hex archives checked on 6 September 2026. The displayed SSoQE course badge is not an official package logo; provenance is recorded in `Presentation/Materials/Logos/README.md`.
+:::
+
+## Argument checks
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="57%"}
+
+<br>
+<br>
+
+```{r}
+#| label: argument-checks
+#| echo: true
+#| eval: false
+assertthat::assert_that(
+  is.numeric(x),
+  msg = "`x` must be a numeric vector."
 )
 
-# load data
-data_vegetation_lowlands <- 
-  load_and_clean_csv("Data/Input/vegetation_lowlands.csv")
+assertthat::assert_that(
+  assertthat::is.flag(na_rm),
+  msg = "`na_rm` must be either TRUE or FALSE."
+)
+```
 
-data_vegetation_highlands <- 
-  load_and_clean_csv("Data/Input/vegetation_highlands.csv")
+:::
 
-# <Estimate diversity> ...
+::: {.column width="40%" .text-center}
+
+<figure>
+<img src="Materials/Illustrations/assertion_gatekeeper.png"
+     alt="A friendly gatekeeper at a function-shaped doorway admits valid numeric inputs and stops unsupported inputs."
+     style="width:100%; height:430px; object-fit:cover; object-position:center; border-radius:18px;">
+<figcaption>Assertions guard the function boundary.</figcaption>
+</figure>
+
+:::
+
+::::
+
+::: {.notes}
+Timing: 64:00 to 66:00. Read each assertion as a sentence about the contract. The first checks the measurement; the second checks the missing-value choice. Emphasise that these checks run every time the function runs.
+:::
+
+## Examples of potential checks
+
+<br>
+
+```{r}
+#| label: data-checks
+#| echo: true
+#| eval: false
+assertthat::assert_that(length(x) > 0L)
+assertthat::assert_that(!any(is.nan(x)))
+if (isFALSE(na_rm)) {
+  assertthat::assert_that(!anyNA(x))
+}
+observed_x <- x[!is.na(x)]
+assertthat::assert_that(length(observed_x) > 0L)
+assertthat::assert_that(all(is.finite(observed_x)))
+```
+
+::: {.fragment}
+
+This could be placed at the start of the function to protect against:
+
+- Empty input
+- Unsupported data types
+- Missing values (if not allowed)
+- Non-finite observed values
+:::
+
+::: {.notes}
+Timing: 66:00 to 68:00. Group the checks by purpose: shape and length, missing-value policy, and finite observed values. Explain why the checks happen before calculating the mean. A constant vector remains valid for this function.
+:::
+
+## Add the assertions 🚪 {.exercise .text-center}
+
+<br>
+
+::: {.blockquote}
+
+Open `R/Exercises/02_assertions.R` and complete Task 3.
+
+1. Assert that `x` is numeric and not empty.
+2. Assert that `na_rm` is one logical value.
+3. Run one unsupported call and read your message.
+
+**Bonus:** protect missing and non-finite values.
+
+:::
+
+`r countdown::countdown(minutes = 5)`
+
+::: {.notes}
+Timing: 68:00 to 73:00. Ask participants to open Task 3 in `R/Exercises/02_assertions.R` and edit the function they created earlier. Success means `mean_penguin_measurement("bill")` fails immediately with a message they control. The missing and non-finite checks are bonuses.
+:::
+
+# [Automated tests]{.text-bold .r-fit-text} {.title}
+
+::: {.notes}
+Timing: 73:00. Transition from checks during a call to checks after a code change. The same function contract supplies both kinds of evidence.
+:::
+
+## `{testthat}`
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="38%" .text-center}
+
+<figure>
+<a href="https://testthat.r-lib.org/"><img src="Materials/Logos/testthat.svg"
+     alt="The official testthat package hex logo, showing a delighted testing creature."
+     style="height:410px; width:auto;"></a>
+<figcaption><a href="https://testthat.r-lib.org/">testthat documentation</a></figcaption>
+</figure>
+
+:::
+
+::: {.column width="58%"}
+
+<br>
+
+::: {.fragment}
+### Tests
+
+Is your function still working as intended?
+
+Run them each time the code changes to protect behaviour that should remain stable.
+
+:::
+
+::: {.fragment}
+### Assertions
+
+Run inside the function.
+
+Protect each call from unsupported input.
+:::
+
+:::
+
+::::
+
+::: {.notes}
+Timing: 73:00 to 75:00. Introduce `{testthat}` through its official hex and documentation link. Contrast the timing: assertions run inside every function call; tests run when we want evidence that expected behaviour still holds after a change.
+
+[Sources]
+
+- `{testthat}` documentation: https://testthat.r-lib.org/
+- Official hex sticker, CC0: https://github.com/rstudio/hex-stickers/blob/main/SVG/testthat.svg
+:::
+
+
+## Unit tests
+
+<br>
+
+```{r}
+#| label: test-examples
+#| echo: true
+#| eval: false
+testthat::test_that("penguin means are calculated", {
+  testthat::expect_equal(
+    mean_penguin_measurement(c(35, 45, 55)),
+    45
+  )
+})
+
+testthat::test_that("text is rejected", {
+  testthat::expect_error(
+    mean_penguin_measurement("long"),
+    "numeric vector"
+  )
+})
+```
+
+<br>
+
+::: {.fragment}
+There is a vast literature on testing: unit tests, integration tests, regression tests, and more.
+:::
+
+::: {.notes}
+Timing: 75:00 to 77:00. Read the two tests as examples of the contract. The first protects a value for plausible bill lengths; the second protects deliberate failure for text input. The expected message should match wording controlled by this project.
+:::
+
+## Paired files with `{usethis}`
+
+:::: {.columns}
+
+::: {.column width="41%"}
+
+```
+R/
+├─ Functions/
+│  └─ mean_penguin_measurement.R
+└─ run_tests.R
+
+tests/
+└─ testthat/
+   └─ test-mean_penguin_measurement.R
+```
+:::
+
+::: {.column width="1%"}
+:::
+
+::: {.column width="54%" }
+
+::: {.fragment}
+Make a function
+
+```{r}
+#| label: usethis-paired-files-fc
+#| echo: true
+#| eval: false
+usethis::edit_file(
+  here::here(
+    "R/Functions/mean_penguin_measurement.R"
+  )
+)
+```
+:::
+
+
+::: {.fragment}
+
+Make a paired test file
+
+```{r}
+#| label: usethis-paired-files-test
+#| echo: true
+#| eval: false
+usethis::use_test(
+  "mean_penguin_measurement"
+)
+```
+:::
+
+
+::: {.fragment}
+
+Run tests
+
+```{r}
+#| label: usethis-paired-files-run-test
+#| echo: true
+#| eval: false
+# individual test file
+testthat::test_file(
+  here::here(
+    "tests/testthat/test-mean_penguin_measurement.R"
+  )
+)
+
+# or full test suite
+testthat::test_dir(
+  here::here(
+    "tests/testthat"
+  )
+)
+```
+:::
+
+:::
+
+
+
+::::
+
+::: footer
+[`use_test()` documentation](https://usethis.r-lib.org/reference/use_r.html)
+:::
+
+::: {.notes}
+Timing: 77:00 to 80:00. Trace the pair from `R/Functions/mean_penguin_measurement.R` to `tests/testthat/test-mean_penguin_measurement.R`. `use_testthat()` initializes the test folders and `use_test()` creates the paired test file. This non-package project runs `tests/testthat/` directly; it does not use the generated top-level `tests/testthat.R` entry point.
+
+[Sources]
+
+- usethis file helpers: https://usethis.r-lib.org/reference/use_r.html
+- usethis edit_file(): https://usethis.r-lib.org/reference/edit_file.html
+:::
+
+
+## Create the test 🧪 {.exercise .text-center}
+
+<br>
+
+::: {.blockquote}
+
+Open `R/Exercises/03_tests.R` and complete Task 4.
+
+1. Run `usethis::use_testthat()`
+2. Run `usethis::use_test("mean_penguin_measurement")`.
+3. Source `R/Functions/mean_penguin_measurement.R` in the new test file.
+4. Add one value expectation and one error expectation.
+5. In a terminal, run `Rscript R/run_tests.R`.
+
+:::
+
+`r countdown::countdown(minutes = 6)`
+
+::: {.notes}
+Timing: 80:00 to 86:00. Ask participants to open Task 4 in `R/Exercises/03_tests.R`. They initialize the test structure, create the paired file, source their function, and add one value expectation plus one error expectation. Success means `Rscript R/run_tests.R` reports both expectations as passing for the intended reason.
+:::
+
+## Test debrief
+
+<br>
+
+When a test fails, ask:
+
+1. Did the implementation change?
+2. Did the contract change?
+3. Is the test checking the right behaviour?
+
+::: {.notes}
+Timing: 86:00 to 87:00. Invite one example of a useful failure. Use the three questions to decide whether the implementation, the contract, or the test should change. Warn that changing an expected value only to make a test green removes the protection.
+:::
+
+# [Working with AI agents]{.text-bold .r-fit-text} {.title}
+
+::: {.notes}
+Timing: 87:00. Return to the session title. The final slides connect functions, assertions, and tests to reviewing changes made with AI agents.
+:::
+
+## Test-driven development (TDD)
+
+<br>
+
+::: {.fragment}
+
+
+1. 🔴 **Red:** write a test for behaviour that does not work yet.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+#| label: tdd-red
+#| echo: true
+#| eval: false
+add_1 <- function(x) {
+  stop("not implemented yet")
+}
 ```
 
 :::
 
 ::: {.column width="50%"}
+
 ```{r}
-#| label: f-project-reason-model-2
+#| label: tdd-red-test
 #| echo: true
 #| eval: false
-#| code-line-numbers: "|4-8"
-# 02_Fit_diversity_model.R:
-# <Header>
-
-source(
-  here::here(
-    "R/Functions/load_and_clean_csv.R"
-    )
-)
-
-# load data
-data_diversity_lowlands <- 
-  load_and_clean_csv("Data/Processed/diversity_lowlands.csv")
-
-data_diversity_highlands <-
-  load_and_clean_csv("Data/Processed/diversity_highlands.csv")
-
-# <Fit models> ...
+testthat::test_that("add_1 adds one", {
+  testthat::expect_equal(
+    add_1(5),
+    6
+  )
+})
 ```
 :::
+
 ::::
 
-## Functional project 
-
-```{r}
-#| eval: false
-#| echo: true
-#| code-line-numbers: "|9,13-15"
-# .
-# └─my_awesome_project/
-#   ├─ Data/
-#   |   ├─ Input/
-#   |   |  ├─ vegetation_lowlands.csv
-#   |   |  └─ vegetation_highlands.csv
-#   |   └─ Processed/
-#   ├─ R/
-#   |   ├─ 00_Config_file.R
-#   |   ├─ 01_Estimate_diversity.R
-#   |   └─ 02_Fit_diversity_model.R
-#   |   └─ Functions/
-#   |       ├─ fit_linear_model.R
-#   |       ├─ load_and_clean_csv.R
-#   |       └─ plot_regression.R
-```
-
-:::: {.columns}
-
-::: {.column width="49%"}
-```{r}
-#| label: f-project-reason-diversity-3
-#| echo: true
-#| eval: false
-#| code-line-numbers: "|4-6"
-# 01_Estimate_diversity.R:
-# <Header>
-
-source(
-  here::here("00_Config_file.R")
-)
-
-# load data
-data_vegetation_lowlands <- 
-  load_and_clean_csv("Data/Input/vegetation_lowlands.csv")
-
-data_vegetation_highlands <- 
-  load_and_clean_csv("Data/Input/vegetation_highlands.csv")
-
-# <Estimate diversity> ...
-```
-
 :::
 
-::: {.column width="50%"} 
-```{r}
-#| label: f-project-reason-model-3
-#| echo: true
-#| eval: false
-#| code-line-numbers: "|4-6"
-# 02_Fit_diversity_model.R:
-# <Header>
-
-source(
-  here::here("00_Config_file.R")
-)
-
-# load data
-data_diversity_lowlands <- 
-  load_and_clean_csv("Data/Processed/diversity_lowlands.csv")
-
-data_diversity_highlands <-
-  load_and_clean_csv("Data/Processed/diversity_highlands.csv")
-
-# <Fit models> ...
-```
-:::
-::::
-
-## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
-
-:::{.r-fit-text}
-* [💽go to R/Exercises/Functional project/Picea_CZ_TroughTime.R](https://github.com/SSoQE/SSoQE-Functional_Programming_in_the_World_of_AI/blob/main/R/Exercises/Functional workflow/Picea_CZ_TroughTime.R)
-* Split the analysis into separate scripts.
+::: {.fragment}
+2. 🟢 **Green:** make the smallest change that passes the test.
 :::
 
-`r countdown(minutes = 5)`
+::: {.fragment}
+3. **Improve tests:** add another test that breaks the function.
 
-# [Reproducible pipeline]{.bold .r-fit-text} {.title}
-
-## Reproducible pipeline/workflow
-
-```{r}
-#| label: reproducible-pipeline
-include_local_figure("what-is-a-workflow.png")
-```
-
-::: footer
-[This image was created by Scriberia for The Turing Way community and is used under a CC-BY licence](https://zenodo.org/doi/10.5281/zenodo.3332807)
+Repeat the cycle until the function is complete.
 :::
 
-## {targets} package
-
-```{r}
-#| label: targets-package
-knitr::include_graphics("https://docs.ropensci.org/targets/logo.svg")
-```
-
-::: footer
-[targets package](https://docs.ropensci.org/targets/)
+::: {.fragment}
+4. 🔧 **Refactor:** improve the function while the tests remain green.
 :::
 
-## Example pipeline
+::: {.notes}
+Timing: 87:00 to 88:00. Move quickly through red, green, another revealing test, and refactor. Explain that a red test can describe missing behaviour rather than an accidental regression. Present TDD as one useful workflow, not a requirement for every exploratory line of code.
+:::
+
+## Defensive programming with AI agents
+
+<br>
+
+::: {.incremental}
+
+1. Make a function for EVERYTHING!
+2. Use assertions to control the input.
+3. Use tests to validate the output.
+4. Use agents to automate the process.
+
+:::
 
 <br>
 
 ::: {.fragment}
-```{mermaid}
-flowchart LR
-    A(Download data) --> B(Extract Samples)
-    B --> C(Plot)
-```
-:::
 
-## Example pipeline 
+🤖 **Agent:** Done!
 
-:::: {.columns}
-
-::: {.column width="33%"}
-```{mermaid}
-flowchart LR
-    A(Download data)
-```
-
-::: {.fragment}
-```{r}
-#| label: targets_ex_download_1
-#| echo: true
-#| eval: false
-#| output: false
-# 01_Download_data.R:
-# <Header>
-# <packages>
-# get datasets
-data_pollen_datatasets <-
-  neotoma2::get_datasets(
-    loc = sel_polygon,
-    datasettype = "pollen",
-    all_data = TRUE
-  )
-
-# get downloads
-# this will take a while
-data_pollen_downloads <-
-  neotoma2::get_downloads(data_pollen_datatasets)
-
-# Save data
-data_pollen_downloads  %>% 
-  readr::write_rds(
-    here::here("Data/Input/data_pollen.rds")
-  )
-```
-:::
+🧑‍🔬 **You:** Great. Show me the tests and the diff.
 
 :::
 
-::: {.column width="33%"}
-```{mermaid}
-flowchart LR
-    B(Extract Samples)
-```
-
-::: {.fragment}
-```{r}
-#| label: targets_ex_samples_1
-#| echo: true
-#| eval: false
-# 02_Extract_samples.R:
-# <Header>
-# <packages>
-
-# load data
-data_pollen_downloads <-
-  readr::read_rds(
-     here::here("Data/Input/data_pollen.rds")
-  )
-
-# get samples
-data_pollen_samples <-
-  neotoma2::samples(data_pollen_downloads) %>%
-  as.data.frame() %>%
-  tibble::as_tibble()
-
-# save results
-data_pollen_samples  %>% 
-  readr::write_rds(
-    here::here("Data/Processed/data_pollen_samples.rds")
-  )
-```
-:::
+::: {.notes}
+Timing: 88:00 to 89:00. Read the checklist, then reveal the short exchange. AI agents can make changes quickly, but the researcher remains responsible for the function's assumptions, the data meaning, and every changed result.
 :::
 
-::: {.column width="33%"}
-```{mermaid}
-flowchart LR
-    C(Plot results)
-```
+# [Outro]{.text-bold .r-fit-text} {.title}
 
-::: {.fragment}
-```{r}
-#| label: targets_ex_plot_1
-#| echo: true
-#| eval: false
-# 03_Plot_results.R:
-# <Header>
-# <packages>
-
-# load data
-data_pollen_samples <-
-  readr::read_rds(
-    here::here("Data/Processed/data_pollen_samples.rds")
-  )
-
-# make plot
-fig_distribution <-
-  plot_distribution(
-    data = data_pollen_samples,
-    sel_taxon = "Picea abies")
-
-# save plot
-ggplot2::ggsave(
-  plot = fig_distribution,
-  filename = here::here("Outputs/Figures/plot_distribution.png")
-  )
-```
-:::
-:::
-::::
-
-## Example pipeline - using {targets}
-
-```{r}
-#| label: targets_ex_pipeline_1
-#| echo: true
-#| eval: false
-#| code-line-numbers: "|4-8|9-12|13-16|"
-# R/Project/pollen_target.R:
-# <Header>
-list(
-  targets::tar_target(
-    name = "data_pollen",
-    command =  load_polygon("Data/Input/sel_polygon.JSON") %>%
-      download_pollen_data()
-  ),
-  targets::tar_target(
-    name = "data_pollen_samples",
-    command = extract_pollen_samples(data_pollen)
-  ),
-  targets::tar_target(
-    name = "fig_distribution",
-    command = plot_distribution_of_taxa(data_pollen_samples, sel_taxon = "Picea abies"
-    )
-  )
-)
-```
-
-```{r}
-#| label: targets_ex_pipeline_1_real
-#| echo: false
-#| eval: true
-#| output: false
-
-
-# make sure that `extract_pollen_samples()` function is defined
-file_conn <-
-  here::here("R/Project/Functions/extract_pollen_samples.R")
-
-writeLines(
-  "
-extract_pollen_samples <- function(data_source) {
-  `%>%` <- magrittr::`%>%`
-
-  data_pollen_samples <-
-    neotoma2::samples(data_source) %>%
-    as.data.frame()
-
-  return(data_pollen_samples)
-}",
-  file_conn
-)
-
-# make sure that there is no previous target
-targets::tar_destroy(
-  script = here::here("R/Project/pollen_target.R"),
-  verbose = FALSE,
-  ask = FALSE
-)
-```
-
-::: {.fragment}
-```{r}
-#| label: targets_ex_pipeline_2
-#| echo: true
-#| eval: false
-targets::tar_make()
-```
-
-```{r}
-#| label: targets_ex_pipeline_2_real
-#| echo: false
-#| eval: true
-#| output: true
-targets::tar_make(
-  script = here::here("R/Project/pollen_target.R")
-)
-```
+::: {.notes}
+Timing: 90:00. End the timed lesson here. Use the remaining slides during questions or leave the links visible after the session.
 :::
 
-## Example pipeline - using {targets}
-
-```{r}
-#| label: targets_ex_pipeline_3
-#| echo: true
-#| eval: false
-targets::tar_visnetwork()
-```
-
-::: {.fragment}
-```{r}
-#| label: targets_ex_pipeline_3_real
-#| echo: false
-#| eval: true
-#| output: true
-targets::tar_visnetwork(
-   script = here::here("R/Project/pollen_target.R")
-     )
-```
-:::
-
-## Example pipeline - using {targets} {auto-animate="true"}
-
-Now edit the `extract_pollen_samples()` function.
-
-```{r}
-#| label: targets_ex_pipeline_4
-#| echo: true
-#| eval: false
-# extract_pollen_samples.R:
-# <Header>
-extract_pollen_samples <- function(data_source) {
-  `%>%` <- magrittr::`%>%`
-
-  data_pollen_samples <-
-    neotoma2::samples(data_source) %>%
-    as.data.frame()
-
-  return(data_pollen_samples)
-}
-```
-
-## Example pipeline - using {targets} {auto-animate="true"}
-
-Now edit the `extract_pollen_samples()` function.
-
-```{r}
-#| label: targets_ex_pipeline_4b
-#| echo: true
-#| eval: false
-#| code-line-numbers: "9"
-# extract_pollen_samples.R:
-# <Header>
-extract_pollen_samples <- function(data_source) {
-  `%>%` <- magrittr::`%>%`
-
-  data_pollen_samples <-
-    neotoma2::samples(data_source) %>%
-    as.data.frame()  %>% 
-    tibble::as_tibble()
-
-  return(data_pollen_samples)
-}
-```
-
-## Example pipeline - using {targets} 
-
-```{r}
-#| label: targets_ex_pipeline_5
-#| echo: true
-#| eval: false
-targets::tar_visnetwork()
-```
-
-::: {.fragment}
-```{r}
-#| label: targets_ex_pipeline_5_real
-#| echo: false
-#| eval: true
-#| output: true
-file_conn <-
-  here::here("R/Project/Functions/extract_pollen_samples.R")
-
-writeLines(
-  "
-extract_pollen_samples <- function(data_source) {
-  `%>%` <- magrittr::`%>%`
-
-  data_pollen_samples <-
-    neotoma2::samples(data_source) %>%
-    as.data.frame()  %>%
-    tibble::as_tibble()
-
-  return(data_pollen_samples)
-}",
-  file_conn
-)
-
-targets::tar_visnetwork(
-  script = here::here("R/Project/pollen_target.R")
-)
-```
-:::
-
-## Example pipeline - using {targets} 
-
-```{r}
-#| label: targets_ex_pipeline_6
-#| echo: true
-#| eval: false
-targets::tar_make()
-```
-
-```{r}
-#| label: targets_ex_pipeline_6_real
-#| echo: false
-#| eval: true
-#| output: true
-targets::tar_make(
-  script = here::here("R/Project/pollen_target.R")
-)
-```
-
-::: {.fragment}
-```{r}
-#| label: targets_ex_pipeline_7
-#| echo: true
-#| eval: false
-targets::tar_visnetwork()
-```
-
-```{r}
-#| label: targets_ex_pipeline_7_real
-#| echo: false
-#| eval: true
-#| output: true
-targets::tar_visnetwork(
-   script = here::here("R/Project/pollen_target.R")
-     )
-```
-:::
-
-## [Practical Exercise]{.r-fit-text} {.exercise .textcenter}
-
-:::{.r-fit-text}
-1. What are your experiences with {targets} package?
-2. Compare the pipeline with script-based aproach.
-3. How can we improve the pipeline?
-:::
-
-`r countdown(minutes = 5)`
-
-# [Outro]{.bold .r-fit-text} {.title}
-
-## [This presentation]{.bold .r-fit-text} {.title}
+## [This presentation]{.text-bold .r-fit-text} {.title}
 
 ::: {.r-fit-text}
-[😸 Code on GitHub](https://github.com/SSoQE/SSoQE-Functional_Programming_in_the_World_of_AI)
+[😸 Code on GitHub](https://github.com/SSoQE/SSoQE-Functional_Programming_in_the_World_of_AI){style="color: `r ssoqe_cols[['white']]` !important;"}
 
-[🖥️ Slides](https://ssoqe.github.io/SSoQE-Functional_Programming_in_the_World_of_AI/)
+[🖥️ Slides](https://ssoqe.github.io/SSoQE-Functional_Programming_in_the_World_of_AI/){style="color: `r ssoqe_cols[['white']]` !important;"}
 
-[![](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[📄 MIT License](https://opensource.org/licenses/MIT){style="color: `r ssoqe_cols[['white']]` !important;"}
+:::
+
+::: {.notes}
+No allocated teaching time. Leave this slide visible when participants need the materials, or advance to the contact slide for questions.
 :::
 
 ## About me
@@ -1454,30 +1564,47 @@ targets::tar_visnetwork(
 
 ::: {.column width="25%"}
 ```{r}
-#| label: personal sticker
-include_local_figure("Ondrej_Mottl-transparent-shadow.png")
+#| label: author-photo
+#| echo: false
+#| fig-alt: "Portrait illustration of Ondřej Mottl."
+knitr::include_graphics(
+  here::here(
+    "Presentation/Materials/Author/Ondrej_Mottl-transparent-shadow.png"
+  )
+)
 ```
 
 ```{r}
-#| label: linktree QR
-include_local_figure("qr_linktree.png")
+#| label: personal-web-qr
+#| echo: false
+#| fig-alt: "QR code linking to Ondřej Mottl's personal webpage."
+knitr::include_graphics(
+  here::here(
+    "Presentation/Materials/QR/qr_personal_web.svg"
+  )
+)
 ```
 :::
 
-::: {.column width="10%"}
+::: {.column width="5%"}
 :::
 
-::: {.column width="62%"}
-[Ondřej Mottl]{.bold .r-fit-text .text-color-primary}
+::: {.column width="70%"}
+[Ondřej Mottl]{.text-bold .r-fit-text .text-color-black}
+
 Assistant Professor at [Charles University](https://cuni.cz/UK-1.html)
-<br>
+
+Head of the 🧑‍💻 [Laboratory of Quantitative Ecology](https://ondrejmottl.github.io/lab/about_the_lab.html)
 
 * 📧 Ondrej.mottl(at)gmail.com
-* 🐦 [@OndrejMottl](https://twitter.com/OndrejMottl)
-* 🐱 [Github](https://github.com/OndrejMottl)
+* 🦋 [ondrejmottl.bsky.social](https://bsky.app/profile/ondrejmottl.bsky.social)
+* 🐱 [GitHub](https://github.com/OndrejMottl)
 * 🆔 [ORCID](https://orcid.org/0000-0002-9796-5081)
 * 🌐 [Personal webpage](https://ondrejmottl.github.io/)
-* 🧑‍💻 [Laboratory of Quantitative Ecology](https://ondrejmottl.github.io/lab/about_the_lab.html)
 :::
 
 ::::
+
+::: {.notes}
+No allocated teaching time. Use this slide for introductions after the session or while taking questions.
+:::
