@@ -2,6 +2,7 @@
 
 This is a template-derived lecture repository for Functional Programming in the World of AI.
 
-- Preserve the existing fossil-pollen exercises and project workflow while the 2026 AI-focused teaching revision is developed separately.
-- Tracked `_targets/` metadata is not proof that the current pipeline runs; verify the actual entry point and inputs before invoking it.
-- Render the presentation through the repository's established `Presentation/render.R` wrapper and update hard-coded final URLs only together with the repository rename and render validation.
+- Use Palmer Penguins as the lesson-wide ecological example and exercise data.
+- Keep reusable course functions under `R/Functions/`. Participant tests created with `{usethis}` use `tests/testthat/`; `R/run_tests.R` runs both maintained checks and participant tests in this non-package project.
+- Tracked `_targets/` metadata in older commits is historical and is not part of the current lesson.
+- Render through `R/render.R`, which synchronizes `Presentation/presentation.html` and `docs/index.html`.
