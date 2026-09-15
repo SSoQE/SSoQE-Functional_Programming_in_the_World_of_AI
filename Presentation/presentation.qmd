@@ -124,7 +124,7 @@ Can someone (or an AI agent) change the code without breaking its behaviour?
 ::::
 
 ::: {.notes}
-Timing: 1:00 to 3:00. Connect to the earlier reproducibility lesson and give participants time to read the comic. Ask whether automation removes work or shifts it towards specifying, checking, and maintaining code. Reveal the question, take one response, then reveal the need for feedback.
+Timing: 1:00 to 2:00. Connect to the earlier reproducibility lesson and give participants time to read the comic. Ask whether automation removes work or shifts it towards specifying, checking, and maintaining code. Reveal the question, take one response, then reveal the need for feedback.
 
 [Sources]
 
@@ -166,7 +166,7 @@ This session is not about how to operate AI agents. It is about writing code tha
 :::
 
 ::: {.notes}
-Timing: 3:00 to 4:00. Set the scope clearly: this session does not teach participants how to operate an AI agent. It teaches coding practices that help an agent understand a task and help either a human or an agent verify the result. The researcher remains responsible for the assumptions, the data meaning, and every changed result.
+Timing: 2:00 to 3:00. Use this slide to establish why the lesson focuses on functions, assertions, and tests before presenting the learning outcomes. Read the checklist, then reveal the short exchange. AI agents can make changes quickly, but the researcher remains responsible for the function's assumptions, the data meaning, and every changed result.
 :::
 
 ## Learning outcomes
@@ -184,7 +184,7 @@ By the end, you can:
 :::
 
 ::: {.notes}
-Timing: 4:00 to 5:00. Read the outcomes briefly and point out the progression: write a function, repeat it with a functional, check its inputs, then test its behaviour. Every practical task uses Palmer Penguins measurements.
+Timing: 3:00 to 5:00. Read the outcomes briefly and point out the progression: write a function, repeat it with a functional, check its inputs, then test its behaviour. Every practical task uses Palmer Penguins measurements.
 :::
 
 # [A function]{.text-bold .r-fit-text} {.title}
@@ -986,7 +986,10 @@ list_penguin_plots <-
       )
   )
 
-str(list_penguin_plots, max.level = 1)
+purrr::map_chr(
+  .x = list_penguin_plots,
+  .f = ~ class(.x)[1]
+)
 ```
 
 ::: {.notes}
@@ -1030,34 +1033,36 @@ list_penguin_plots |>
 Timing: 54:00 to 56:00. Read the three panels from left to right. Ask what remains the same across species and what changes. Return to the original question: one workflow produced one figure per species.
 :::
 
-## Extra: all in one pipe
+## Extra: compact workflow
 
 <br>
+
+::: {.code-scroll style="max-height: 430px; overflow-y: auto; scrollbar-gutter: stable;"}
 
 ```{r}
 #| label: map-penguin-figures-pipe
 #| echo: true
 #| eval: false
 palmerpenguins::penguins |>
-  tidyr::nest(data_nested = -species)
-dplyr::mutate(
-  model = purrr::map(
-    .x = data_nested,
-    .f = ~ stats::lm(bill_length_mm ~ bill_depth_mm, data = .x)
-  ),
-  model_coef = purrr::map(
-    .x = model,
-    .f = ~ stats::coef(.x)
-  ),
-  plot = purrr::map2(
-    .x = data_nested,
-    .y = model_coef,
-    .f = ~ plot_penguin_figure(
-      data_source = .x,
-      vec_coefs = .y
+  tidyr::nest(data_nested = -species) |>
+  dplyr::mutate(
+    model = purrr::map(
+      .x = data_nested,
+      .f = ~ stats::lm(bill_length_mm ~ bill_depth_mm, data = .x)
+    ),
+    model_coef = purrr::map(
+      .x = model,
+      .f = ~ stats::coef(.x)
+    ),
+    plot = purrr::map2(
+      .x = data_nested,
+      .y = model_coef,
+      .f = ~ plot_penguin_figure(
+        data_source = .x,
+        vec_coefs = .y
+      )
     )
-  )
-) |>
+  ) |>
   purrr::chuck("plot") |>
   cowplot::plot_grid(
     plotlist = _,
@@ -1065,8 +1070,10 @@ dplyr::mutate(
   )
 ```
 
+:::
+
 ::: {.notes}
-Timing: 56:00 to 58:00. Present this as an optional compact version of the workflow participants have already seen. Trace one species data frame into a local model and then a plot; `map()` collects the three plots before `plot_grid()` combines them. The separated version remains easier to debug and review.
+Timing: 56:00 to 58:00. Present this as an optional compact version of the workflow participants have already seen. Trace one species data frame into a local model and then a plot. `map2()` collects the three plots before `plot_grid()` combines them. The separated version remains easier to debug and review.
 :::
 
 
@@ -1541,7 +1548,7 @@ Repeat the cycle until the function is complete.
 :::
 
 ::: {.notes}
-Timing: 87:00 to 88:00. Move quickly through red, green, another revealing test, and refactor. Explain that a red test can describe missing behaviour rather than an accidental regression. Present TDD as one useful workflow, not a requirement for every exploratory line of code.
+Timing: 87:00 to 89:00. Move through red, green, another revealing test, and refactor. Explain that a red test can describe missing behaviour rather than an accidental regression. Present TDD as one useful workflow, not a requirement for every exploratory line of code.
 :::
 
 # [Outro]{.text-bold .r-fit-text} {.title}
