@@ -132,6 +132,43 @@ Timing: 1:00 to 3:00. Connect to the earlier reproducibility lesson and give par
 - Licence: Creative Commons Attribution-NonCommercial 2.5: https://xkcd.com/license.html
 :::
 
+## Agentic programming needs defensive code
+
+::: {.blockquote}
+This session is not about how to operate AI agents. It is about writing code that agents can navigate and that humans or agents can validate.
+:::
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="47%"}
+### Easy to pick up
+
+- small, named functions
+- explicit inputs and outputs
+:::
+
+::: {.column width="6%"}
+:::
+
+::: {.column width="47%"}
+### Easy to check
+
+- assertions at the boundaries
+- focused tests for expected behaviour
+:::
+
+::::
+
+::: {.fragment .text-center}
+🤖 **Agent:** Done. &nbsp;&nbsp; 🧑‍🔬 **You:** Show me the tests and the diff.
+:::
+
+::: {.notes}
+Timing: 3:00 to 4:00. Set the scope clearly: this session does not teach participants how to operate an AI agent. It teaches coding practices that help an agent understand a task and help either a human or an agent verify the result. The researcher remains responsible for the assumptions, the data meaning, and every changed result.
+:::
+
 ## Learning outcomes
 
 <br>
@@ -147,7 +184,7 @@ By the end, you can:
 :::
 
 ::: {.notes}
-Timing: 3:00 to 5:00. Read the outcomes briefly and point out the progression: write a function, repeat it with a functional, check its inputs, then test its behaviour. Every practical task uses Palmer Penguins measurements.
+Timing: 4:00 to 5:00. Read the outcomes briefly and point out the progression: write a function, repeat it with a functional, check its inputs, then test its behaviour. Every practical task uses Palmer Penguins measurements.
 :::
 
 # [A function]{.text-bold .r-fit-text} {.title}
@@ -521,7 +558,7 @@ A functional takes a function as input (parameter) and applies it to data accord
 <figure>
 <img src="Materials/Illustrations/functional_revelation.png"
      alt="An ecology researcher has a delighted realisation while nested abstract function shapes float above a laptop."
-     style="width:100%; height:545px; object-fit:cover; object-position:68% center; border-radius:18px;">
+     style="width:100%; height:465px; object-fit:cover; object-position:68% center; border-radius:18px;">
 <figcaption>AI illustration created for SSoQE 2026.</figcaption>
 </figure>
 
@@ -596,8 +633,6 @@ Timing: 29:00 to 30:00. Introduce `{purrr}` through its logo and documentation l
 :::
 
 ## `purrr::map()`
-
-<br>
 
 <figure style="text-align:center;">
 <a href="https://adv-r.hadley.nz/functionals.html"><img src="Materials/Figures/advanced-r-map.png"
@@ -863,8 +898,6 @@ Timing: 44:00 to 46:00. Show where bill length and bill depth are measured. Ask 
 :::
 
 ## Split the data
-
-<br>
 
 ```{r}
 #| label: split-penguins-data
@@ -1331,7 +1364,7 @@ tests/
 ::: {.column width="1%"}
 :::
 
-::: {.column width="54%" }
+::: {.column width="54%" .text-smaller}
 
 ::: {.fragment}
 Make a function
@@ -1509,33 +1542,6 @@ Repeat the cycle until the function is complete.
 
 ::: {.notes}
 Timing: 87:00 to 88:00. Move quickly through red, green, another revealing test, and refactor. Explain that a red test can describe missing behaviour rather than an accidental regression. Present TDD as one useful workflow, not a requirement for every exploratory line of code.
-:::
-
-## Defensive programming with AI agents
-
-<br>
-
-::: {.incremental}
-
-1. Make a function for EVERYTHING!
-2. Use assertions to control the input.
-3. Use tests to validate the output.
-4. Use agents to automate the process.
-
-:::
-
-<br>
-
-::: {.fragment}
-
-🤖 **Agent:** Done!
-
-🧑‍🔬 **You:** Great. Show me the tests and the diff.
-
-:::
-
-::: {.notes}
-Timing: 88:00 to 89:00. Read the checklist, then reveal the short exchange. AI agents can make changes quickly, but the researcher remains responsible for the function's assumptions, the data meaning, and every changed result.
 :::
 
 # [Outro]{.text-bold .r-fit-text} {.title}
