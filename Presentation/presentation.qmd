@@ -132,27 +132,37 @@ Timing: 1:00 to 2:00. Connect to the earlier reproducibility lesson and give par
 - Licence: Creative Commons Attribution-NonCommercial 2.5: https://xkcd.com/license.html
 :::
 
-## Defensive programming with AI agents
+## Agentic programming needs defensive code
 
-<br>
-
-::: {.incremental}
-
-1. Make a function for EVERYTHING!
-2. Use assertions to control the input.
-3. Use tests to validate the output.
-4. Use agents to automate the process.
-
+::: {.blockquote}
+This session is not about how to operate AI agents. It is about writing code that agents can navigate and that humans or agents can validate.
 :::
 
 <br>
 
-::: {.fragment}
+:::: {.columns}
 
-🤖 **Agent:** Done!
+::: {.column width="47%"}
+### Easy to pick up
 
-🧑‍🔬 **You:** Great. Show me the tests and the diff.
+- small, named functions
+- explicit inputs and outputs
+:::
 
+::: {.column width="6%"}
+:::
+
+::: {.column width="47%"}
+### Easy to check
+
+- assertions at the boundaries
+- focused tests for expected behaviour
+:::
+
+::::
+
+::: {.fragment .text-center}
+🤖 **Agent:** Done. &nbsp;&nbsp; 🧑‍🔬 **You:** Show me the tests and the diff.
 :::
 
 ::: {.notes}
@@ -548,7 +558,7 @@ A functional takes a function as input (parameter) and applies it to data accord
 <figure>
 <img src="Materials/Illustrations/functional_revelation.png"
      alt="An ecology researcher has a delighted realisation while nested abstract function shapes float above a laptop."
-     style="width:100%; height:545px; object-fit:cover; object-position:68% center; border-radius:18px;">
+     style="width:100%; height:465px; object-fit:cover; object-position:68% center; border-radius:18px;">
 <figcaption>AI illustration created for SSoQE 2026.</figcaption>
 </figure>
 
@@ -623,8 +633,6 @@ Timing: 29:00 to 30:00. Introduce `{purrr}` through its logo and documentation l
 :::
 
 ## `purrr::map()`
-
-<br>
 
 <figure style="text-align:center;">
 <a href="https://adv-r.hadley.nz/functionals.html"><img src="Materials/Figures/advanced-r-map.png"
@@ -890,8 +898,6 @@ Timing: 44:00 to 46:00. Show where bill length and bill depth are measured. Ask 
 :::
 
 ## Split the data
-
-<br>
 
 ```{r}
 #| label: split-penguins-data
@@ -1365,7 +1371,7 @@ tests/
 ::: {.column width="1%"}
 :::
 
-::: {.column width="54%" }
+::: {.column width="54%" .text-smaller}
 
 ::: {.fragment}
 Make a function
